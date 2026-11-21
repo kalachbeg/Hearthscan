@@ -184,8 +184,14 @@
             # TEMP and TMP keep that folder inside this one as well.
             $env:TEMP = $tmp
             $env:TMP = $tmp
+            # Windows PowerShell turns each line a program writes to stderr into
+            # an error record once the output is redirected (and always in the
+            # ISE). With 'Stop' the first progress line would end the script.
+            # The program's exit code says how it went.
+            $ErrorActionPreference = 'Continue'
             & $exe @args
             $exitCode = $LASTEXITCODE
+            $ErrorActionPreference = 'Stop'
         }
     } catch {
         Write-Problem "Hearthscan could not be started: $($_.Exception.Message)"

@@ -347,3 +347,12 @@ def test_spec_takes_pywebview_along_when_installed():
 def test_entry_script():
     lines = [line for line in read(ENTRY).splitlines() if line and not line.startswith("#")]
     assert lines == ["from hearthscan.cli import main", "raise SystemExit(main())"]
+
+
+def test_ps1_does_not_stop_on_the_programs_stderr():
+    # Progress and notes go to stderr; Windows PowerShell 5.1 would turn them
+    # into terminating errors under ErrorActionPreference 'Stop'.
+    text = read(RUN_PS1)
+    start = text.index("& $exe @args")
+    before = text[:start]
+    assert before.rstrip().endswith("$ErrorActionPreference = 'Continue'")
