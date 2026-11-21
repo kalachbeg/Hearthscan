@@ -240,10 +240,10 @@ def test_menu_runs_a_choice_and_quits(monkeypatch):
     monkeypatch.setattr(cli, "local_network", lambda: INFO)
     screens = Screens(terminal=True)
     monkeypatch.setattr(cli.sys, "stdin", Tty())
-    answers = iter(["9", "3", "", "q"])
+    answers = iter(["9", "6", "", "q"])
     monkeypatch.setattr(builtins, "input", lambda *a: next(answers))
     assert cli.main(["--lang", "en"], app=screens.app) == 0
-    assert "192.168.1.50" in screens.out  # the network details from choice 3
+    assert "192.168.1.50" in screens.out  # the network details from choice 6
     assert "Please choose one of the options" in screens.out
 
 
@@ -252,7 +252,7 @@ def test_menu_survives_a_lost_network(monkeypatch):
     monkeypatch.setattr(cli, "local_network", lambda: next(networks, INFO))
     screens = Screens(terminal=True)
     monkeypatch.setattr(cli.sys, "stdin", Tty())
-    answers = iter(["3", "", "q"])
+    answers = iter(["6", "", "q"])
     monkeypatch.setattr(builtins, "input", lambda *a: next(answers))
     assert cli.main(["--lang", "en"], app=screens.app) == 0
     assert "No local network" in screens.err
@@ -266,6 +266,53 @@ def test_menu_ctrl_c_quits(monkeypatch):
     monkeypatch.setattr(cli.sys, "stdin", Tty())
     monkeypatch.setattr(builtins, "input", interrupt)
     assert cli.main([], app=Screens(terminal=True).app) == 0
+
+
+def fake_window(monkeypatch):
+    """Replaces the window. Returns how it was opened: (prefer_window, language)."""
+    opened = []
+
+    def open_window(*, prefer_window=True):
+        opened.append((prefer_window, i18n.language()))
+        return 0
+
+    import hearthscan.gui.window
+
+    monkeypatch.setattr(hearthscan.gui.window, "open_window", open_window)
+    return opened
+
+
+def test_menu_in_the_planned_order(monkeypatch):
+    opened = fake_window(monkeypatch)
+    monkeypatch.setattr(cli, "local_network", lambda: INFO)
+    screens = Screens(terminal=True)
+    monkeypatch.setattr(cli.sys, "stdin", Tty())
+    answers = iter(["2", "", "q"])
+    monkeypatch.setattr(builtins, "input", lambda *a: next(answers))
+    assert cli.main(["--lang", "en"], app=screens.app) == 0
+    labels = [
+        "ui.menu.scan",
+        "ui.menu.window",
+        "ui.menu.watch",
+        "ui.menu.devices",
+        "ui.menu.router",
+        "ui.menu.network",
+    ]
+    places = [screens.out.index(f"{n}  {t(label)}") for n, label in enumerate(labels, 1)]
+    assert places == sorted(places)
+    assert places[-1] < screens.out.index("q  Quit")
+    assert opened == [(True, "en")]  # choice 2 opened the window
+
+
+def test_gui_opens_the_window_or_the_browser(screens, monkeypatch):
+    opened = fake_window(monkeypatch)
+    assert cli.main(["gui", "--lang", "en"], app=screens.app) == 0
+    assert cli.main(["gui", "--browser", "--lang", "tr"], app=screens.app) == 0
+    assert opened == [(True, "en"), (False, "tr")]
+
+
+def test_gui_is_in_the_help():
+    assert "open the desktop window" in cli.build_parser().format_help()
 
 
 def test_names_from_the_network_are_not_markup(screens, monkeypatch):
@@ -571,15 +618,15 @@ def test_router_ctrl_c(screens, monkeypatch):
     assert cli.main(["router", "--lang", "en"], app=screens.app) == 130
 
 
-def test_menu_option_4_asks_the_router(monkeypatch):
+def test_menu_option_5_asks_the_router(monkeypatch):
     monkeypatch.setattr(cli, "local_network", lambda: INFO)
     fake_router(monkeypatch, router_info(RDP))
     screens = Screens(terminal=True)
     monkeypatch.setattr(cli.sys, "stdin", Tty())
-    answers = iter(["4", "", "q"])
+    answers = iter(["5", "", "q"])
     monkeypatch.setattr(builtins, "input", lambda *a: next(answers))
     assert cli.main(["--lang", "en"], app=screens.app) == 0
-    assert "4  Check my router" in screens.out
+    assert "5  Check my router" in screens.out
     assert "Remote desktop" in screens.out
 
 
@@ -702,7 +749,9 @@ def test_report_reads_a_file_with_a_byte_order_mark(screens, tmp_path):
         (b'{"tool": "other", "schema": 1}', "not a Hearthscan result"),
         (b'{"tool": "hearthscan", "schema": 99}', "schema 99"),
         (b'{"tool": "hearthscan", "schema": 1, "version": 3}', "version should be a string"),
-        (b"[" * 100000, "not a Hearthscan result"),
+        # How deep the json module gets before it gives up depends on the
+        # platform's stack, so only the refusal itself is checked here.
+        (b"[" * 100000, ""),
         (b"\xff\xfe{\x00}\x00", "not UTF-8 text"),
         (b"", "Expecting value"),
     ],

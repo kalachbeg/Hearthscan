@@ -97,7 +97,14 @@ REPORT_TEXTS = {
     "diff.none": set(),
     "diff.other_network": {"before", "after"},
 }
-SCREEN_PREFIXES = ("ui.", "report.", "diff.", "watch.", "known.")
+# Texts the window and its launcher use outside the page -> their placeholders.
+WINDOW_TEXTS = {
+    "ui.menu.window": set(),
+    "gui.browser_hint": {"url"},
+    "gui.window_missing": set(),
+    "gui.window_failed": {"reason"},
+}
+SCREEN_PREFIXES = ("ui.", "report.", "diff.", "watch.", "known.", "gui.")
 
 
 def load(code):
@@ -204,6 +211,14 @@ def test_report_and_diff_texts(code):
         assert placeholders(texts[key]) == params, key
     extra = {key for key in texts if key.startswith(("report.", "diff."))} - set(REPORT_TEXTS)
     assert not extra
+
+
+@pytest.mark.parametrize("code", i18n.LANGUAGES)
+def test_window_texts(code):
+    texts = load(code)
+    for key, params in WINDOW_TEXTS.items():
+        assert key in texts, key
+        assert placeholders(texts[key]) == params, key
 
 
 def test_turkish_dates_put_the_day_first():
@@ -573,3 +588,11 @@ def test_parse_rejects_oversized_files():
 
 def test_missing_language_file_is_empty():
     assert i18n._texts("zz") == {}
+
+
+def test_table_fills_gaps_with_english(fake_texts):
+    table = i18n.table("tr")
+    assert table["greeting"] == "Merhaba {name}"
+    assert table["only.english"] == "English only"
+    assert set(table) == set(FAKE_TEXTS["en"])
+    assert i18n.table("xx") == FAKE_TEXTS["en"]

@@ -629,6 +629,12 @@ class App:
         self.out.print(Text(summary, style="dim"))
         return EXIT_OK
 
+    def open_gui(self, *, browser: bool = False) -> int:
+        """The desktop window, or the browser with `browser`. Returns when it is closed."""
+        from .gui.window import open_window
+
+        return open_window(prefer_window=not browser)
+
     # Menu
 
     def menu(self, help_text: Callable[[], str]) -> int:
@@ -640,10 +646,11 @@ class App:
             return EXIT_OK
         actions: dict[str, tuple[str, Callable[[], int]]] = {
             "1": ("ui.menu.scan", self.full_scan),
-            "2": ("ui.menu.devices", self.list_devices),
-            "3": ("ui.menu.network", self.show_network),
-            "4": ("ui.menu.router", self.show_router),
-            "5": ("ui.menu.watch", self.watch_network),
+            "2": ("ui.menu.window", self.open_gui),
+            "3": ("ui.menu.watch", self.watch_network),
+            "4": ("ui.menu.devices", self.list_devices),
+            "5": ("ui.menu.router", self.show_router),
+            "6": ("ui.menu.network", self.show_network),
         }
         try:
             info = local_network()
@@ -845,6 +852,18 @@ def build_parser() -> argparse.ArgumentParser:
         default=1.0,
         help=f"seconds to wait for each port, up to {MAX_TIMEOUT:.0f} (default: 1)",
     )
+
+    gui_cmd = commands.add_parser(
+        "gui",
+        parents=[common],
+        help="open the desktop window",
+        description="Open Hearthscan in a window of its own. Without pywebview "
+        '(pip install "hearthscan[window]") it opens in your web browser instead. '
+        "Either way it only listens on this computer.",
+    )
+    gui_cmd.add_argument(
+        "--browser", action="store_true", help="open it in the web browser instead of a window"
+    )
     return parser
 
 
@@ -902,6 +921,8 @@ def main(argv: Sequence[str] | None = None, app: App | None = None) -> int:
                 clear=args.clear,
                 as_json=args.json,
             )
+        if args.command == "gui":
+            return app.open_gui(browser=args.browser)
         return app.menu(parser.format_help)
     except _Abort as stop:
         return stop.code

@@ -41,6 +41,11 @@ Changelog = "https://github.com/kalachbeg/Hearthscan/blob/main/CHANGELOG.md"
 [project.scripts]
 hearthscan = "hearthscan.cli:main"
 
+[project.optional-dependencies]
+window = [
+    "pywebview>=5",
+]
+
 [dependency-groups]
 dev = [
     "pytest>=9.2.0",

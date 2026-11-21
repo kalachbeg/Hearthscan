@@ -171,6 +171,13 @@ def t(key: str, /, **params: object) -> str:
     return _fill(text, params)
 
 
+def table(code: str) -> dict[str, str]:
+    """Every English key with its text in language `code`, English where it has none."""
+    english = _texts("en")
+    chosen = _texts(code) if code in LANGUAGES else {}
+    return {key: chosen.get(key, text) for key, text in english.items()}
+
+
 def has(key: str) -> bool:
     """True when `key` has a text in the current language or in English."""
     return key in _texts(_current) or key in _texts("en")

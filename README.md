@@ -4,8 +4,8 @@ Hearthscan looks at the network in your home and tells you, in plain words, what
 on it and what those devices expose.
 
 This is the 2.0 rewrite of the project that used to be called NetShark. It is not
-finished yet: everything works from the terminal, including reports and watch mode;
-the desktop window and the one-line launchers come next.
+finished yet: the terminal interface and the desktop window work; the one-line
+launchers and ready-made downloads come next.
 
 Hearthscan only scans private networks (192.168.x.x, 10.x.x.x, 172.16-31.x.x and
 link-local addresses). Public addresses are refused.
@@ -24,6 +24,7 @@ uv run hearthscan report scan.json
 uv run hearthscan diff last-week.json scan.json
 uv run hearthscan watch
 uv run hearthscan known
+uv run --extra window hearthscan gui
 uv run hearthscan devices
 uv run hearthscan router
 uv run hearthscan net

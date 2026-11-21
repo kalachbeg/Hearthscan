@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Hearthscan</title>
+<link rel="stylesheet" href="styles.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <path class="mark-house" d="M5 14.5 16 5.5l11 9V25a1.5 1.5 0 0 1-1.5 1.5h-19A1.5 1.5 0 0 1 5 25z"/>
+        <path class="mark-flame" d="M16 12.2c2.4 2.3 3.9 4.4 3.9 6.6a3.9 3.9 0 0 1-7.8 0c0-1.4.6-2.6 1.7-3.7.1 1.1.6 1.9 1.4 2.3-.4-1.8 0-3.5.8-5.2z"/>
+      </svg>
+      <span class="brand-name">Hearthscan</span>
+      <span class="version" id="version"></span>
+    </div>
+    <p class="netline" id="netline" hidden></p>
+    <div class="lang" id="lang" role="group" data-t-label="gui.language" hidden></div>
+  </div>
+</header>
+
+<main class="wrap main" id="main">
+  <p class="banner" id="banner" role="status"></p>
+  <p class="message" id="message" role="status"></p>
+
+  <section class="view view-loading" id="view-loading">
+    <div class="spinner" aria-hidden="true"></div>
+    <p class="sr-only" data-t="gui.loading"></p>
+  </section>
+
+  <section class="view" id="view-fatal" hidden>
+    <div class="card notice-card">
+      <h1 class="sr-only" tabindex="-1">Hearthscan</h1>
+      <p id="fatal-text" data-t="gui.error.token">This page only works through the link Hearthscan opens for you. Start Hearthscan again to get a new one.</p>
+    </div>
+  </section>
+
+  <section class="view view-start" id="view-start" hidden aria-labelledby="start-title">
+    <div class="card hero">
+      <h1 id="start-title" tabindex="-1" data-t="gui.start.title"></h1>
+      <p class="lead" data-t="gui.start.body"></p>
+      <p class="safe">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M12 3 5 6v5.2c0 4.3 2.9 8.1 7 9.3 4.1-1.2 7-5 7-9.3V6z"/>
+          <path d="m9 12 2.2 2.2L15.2 10"/>
+        </svg>
+        <span data-t="gui.start.safe"></span>
+      </p>
+      <p class="notice notice-warn" id="sandbox" hidden></p>
+      <div class="notice" id="nonet" hidden>
+        <p data-t="ui.no_network"></p>
+        <button type="button" class="btn btn-secondary" id="retry" data-t="gui.retry"></button>
+      </div>
+      <div class="start-actions" id="start-actions">
+        <button type="button" class="btn btn-primary btn-big" id="scan" data-t="ui.menu.scan"></button>
+        <div class="ports-only">
+          <button type="button" class="btn btn-quiet" id="scan-ports" aria-describedby="ports-hint" data-t="gui.start.ports_only"></button>
+          <p class="hint" id="ports-hint" data-t="gui.start.ports_only_hint"></p>
+        </div>
+      </div>
+    </div>
+    <section class="card netcard" id="netcard" hidden aria-labelledby="net-title">
+      <h2 id="net-title" data-t="gui.start.network"></h2>
+      <dl class="facts-grid" id="netfacts"></dl>
+    </section>
+  </section>
+
+  <section class="view" id="view-scan" hidden aria-labelledby="scan-title">
+    <div class="card scan-card">
+      <h1 id="scan-title" tabindex="-1" data-t="gui.scan.title"></h1>
+      <p class="hint" data-t="gui.scan.hint"></p>
+      <div class="stage-row">
+        <p class="stage" id="stage" aria-live="polite"></p>
+        <p class="percent" id="percent"></p>
+      </div>
+      <div class="bar" id="bar" role="progressbar" aria-labelledby="stage" aria-valuemin="0" aria-valuemax="100"><span class="bar-fill" id="bar-fill"></span></div>
+      <ol class="steps" id="steps" data-t-label="gui.scan.steps"></ol>
+      <div class="scan-actions">
+        <button type="button" class="btn btn-secondary" id="stop" data-t="gui.stop"></button>
+      </div>
+      <ul class="scan-notes" id="scan-notes"></ul>
+    </div>
+  </section>
+
+  <section class="view" id="view-result" hidden aria-labelledby="score-title">
+    <section class="card score" id="score">
+      <div class="score-main">
+        <h1 class="eyebrow" id="score-title" tabindex="-1" data-t="ui.score.title"></h1>
+        <p class="score-line">
+          <span class="number" id="score-number"></span>
+          <span class="out-of">/ 100</span>
+          <span class="band-title" id="band-title"></span>
+        </p>
+        <div class="meter" aria-hidden="true"><span class="meter-fill" id="meter-fill"></span></div>
+        <p class="band-summary" id="band-summary"></p>
+        <p class="urgent" id="urgent" hidden data-t="ui.score.urgent"></p>
+        <p class="warn" id="unprobed" hidden data-t="gui.result.unprobed"></p>
+        <p class="facts" id="facts"></p>
+      </div>
+      <ul class="tiles" id="tiles" data-t-label="gui.result.counts"></ul>
+    </section>
+
+    <div class="toolbar">
+      <button type="button" class="btn btn-primary" id="again" data-t="gui.result.again"></button>
+      <button type="button" class="btn btn-secondary" id="save-report" data-t="gui.save.report"></button>
+      <button type="button" class="btn btn-secondary" id="save-json" data-t="gui.save.json"></button>
+    </div>
+    <div class="save-box">
+      <p class="save-message" id="save-message" role="status"></p>
+      <button type="button" class="btn btn-quiet" id="copy" hidden data-t="gui.save.copy"></button>
+      <div class="copy-box" id="copy-box" hidden>
+        <label for="copy-text" data-t="gui.save.text"></label>
+        <textarea id="copy-text" rows="8" readonly spellcheck="false"></textarea>
+      </div>
+    </div>
+
+    <section class="block" aria-labelledby="findings-title">
+      <h2 id="findings-title" data-t="ui.findings.title"></h2>
+      <p class="ok" id="findings-none" hidden data-t="ui.findings.none"></p>
+      <div class="finding-list" id="finding-list"></div>
+      <div id="fyi" hidden>
+        <h3 data-t="ui.findings.fyi"></h3>
+        <ul class="card list" id="fyi-list"></ul>
+      </div>
+    </section>
+
+    <section class="block" id="router" hidden aria-labelledby="router-title">
+      <h2 id="router-title" data-t="ui.router.title"></h2>
+      <dl class="card facts-grid router-facts" id="router-facts"></dl>
+      <h3 data-t="ui.router.mappings"></h3>
+      <div id="mappings"></div>
+    </section>
+
+    <section class="block" aria-labelledby="devices-title">
+      <div class="block-head">
+        <h2 id="devices-title"><span data-t="ui.devices.title"></span> <span class="count" id="device-count"></span></h2>
+        <div class="search" id="search-box">
+          <label class="sr-only" for="search" data-t="gui.devices.search"></label>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="11" cy="11" r="6.5"/>
+            <path d="m16 16 4 4"/>
+          </svg>
+          <input type="search" id="search" autocomplete="off" spellcheck="false" data-t-placeholder="gui.devices.search_hint">
+        </div>
+      </div>
+      <p class="hint shown" id="device-shown" aria-live="polite"></p>
+      <div class="card table" id="device-table"></div>
+      <p class="hint" id="no-match" hidden data-t="gui.devices.no_match"></p>
+    </section>
+
+    <section class="block" id="notes" hidden>
+      <details class="notes">
+        <summary id="notes-title"></summary>
+        <ul id="notes-list"></ul>
+      </details>
+    </section>
+
+    <footer class="foot">
+      <p id="foot-made"></p>
+      <p data-t="gui.result.privacy"></p>
+    </footer>
+  </section>
+</main>
+</body>
+</html>

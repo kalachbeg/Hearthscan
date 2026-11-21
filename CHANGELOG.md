@@ -66,6 +66,14 @@ in your own home.
   tells you when a device turns up that it has never seen before. The devices
   it knows are kept in a small file in your user folder, and
   `hearthscan known` lists them.
+- A desktop window: `hearthscan gui`, or option 2 in the menu, shows the same
+  check with a big start button, live progress, the results as cards, the
+  router and a searchable device list, in English or Turkish. It runs in a
+  pywebview window when the `window` extra is installed and in your browser
+  otherwise. The page is served on 127.0.0.1 only, behind a random token, and
+  loads nothing from the internet.
+- The start menu is now: check my network, open the window, watch, devices,
+  router, network details.
 
 ### Removed
 
