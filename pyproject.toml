@@ -12,7 +12,7 @@ requires-python = ">=3.10"
 authors = [{ name = "kalachbeg" }]
 keywords = ["network", "lan", "home-network", "security", "scanner", "iot"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Environment :: Console",
     "Intended Audience :: End Users/Desktop",
     "Operating System :: MacOS",
