@@ -4,6 +4,17 @@ Notable changes to this project. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [semantic versioning](https://semver.org/).
 
+## [2.0.1] - 2026-11-21
+
+### Changed
+
+- The window has a new layout and a quieter look. In a wide window the score,
+  the counts and the buttons stay in a column on the left while the findings,
+  the router and the devices scroll by on the right. Each finding puts why it
+  matters and what to do side by side, and the start screen is just the
+  question and the one button. Narrow windows keep a single column. Thanks to
+  KediYusuf ([#3](https://github.com/kalachbeg/Hearthscan/pull/3)).
+
 ## [2.0.0] - 2026-11-21
 
 Hearthscan is a rewrite of NetShark with a narrower goal: checking the network
@@ -91,4 +102,5 @@ in your own home.
 
 Published as NetShark, a general purpose port, subdomain and web scanner.
 
+[2.0.1]: https://github.com/kalachbeg/Hearthscan/releases/tag/v2.0.1
 [2.0.0]: https://github.com/kalachbeg/Hearthscan/releases/tag/v2.0.0

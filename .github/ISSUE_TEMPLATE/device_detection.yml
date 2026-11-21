@@ -35,4 +35,4 @@ body:
     id: version
     attributes:
       label: Hearthscan version
-      placeholder: hearthscan 2.0.0
+      placeholder: hearthscan 2.0.1
