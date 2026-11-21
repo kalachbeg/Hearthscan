@@ -18,6 +18,8 @@ from .models import (
     Finding,
     MdnsInfo,
     NetbiosInfo,
+    PortMapping,
+    RouterInfo,
     ScanResult,
     Service,
     UpnpInfo,
@@ -75,6 +77,7 @@ def from_dict(data: dict[str, Any]) -> ScanResult:
         notes=[
             (item.get("source", _TEXT), item.get("message", _TEXT)) for item in top.objects("notes")
         ],
+        router=top.child("router", _router),
     )
 
 
@@ -193,6 +196,30 @@ def _finding(obj: _Object) -> Finding:
     )
 
 
+def _router(obj: _Object) -> RouterInfo:
+    return RouterInfo(
+        external_ip=obj.get("external_ip", _ADDRESS, None),
+        connection=obj.get("connection", _TEXT, None),
+        status=obj.get("status", _TEXT, None),
+        uptime=obj.get("uptime", _COUNT, None),
+        mappings=[_mapping(item) for item in obj.objects("mappings")],
+        mappings_complete=obj.get("mappings_complete", _FLAG, True),
+    )
+
+
+def _mapping(obj: _Object) -> PortMapping:
+    return PortMapping(
+        protocol=obj.get("protocol", _TEXT),
+        external_port=obj.get("external_port", _PORT),
+        internal_client=obj.get("internal_client", _ADDRESS),
+        internal_port=obj.get("internal_port", _PORT),
+        description=obj.get("description", _TEXT, ""),
+        enabled=obj.get("enabled", _FLAG, True),
+        lease=obj.get("lease", _COUNT, 0),
+        remote_host=obj.get("remote_host", _TEXT, ""),
+    )
+
+
 def _is_int(value: object) -> bool:
     return isinstance(value, int) and not isinstance(value, bool)
 
@@ -223,6 +250,7 @@ _Check = tuple[Callable[[Any], bool], str]
 _TEXT: _Check = (lambda value: isinstance(value, str), "a string")
 _FLAG: _Check = (lambda value: isinstance(value, bool), "true or false")
 _PORT: _Check = (lambda value: _is_int(value) and 0 < value < 65536, "a port number")
+_COUNT: _Check = (lambda value: _is_int(value) and value >= 0, "a whole number, zero or more")
 _SCORE: _Check = (lambda value: _is_int(value) and 0 <= value <= 100, "a score from 0 to 100")
 _SEVERITY: _Check = (lambda value: value in SEVERITIES, "one of " + ", ".join(SEVERITIES))
 _ADDRESS: _Check = (_is_address, "an IP address")

@@ -9,10 +9,10 @@ import math
 from collections.abc import Callable, Sequence
 from datetime import datetime, timezone
 
-from . import __version__, discovery, probes, rules, scoring
+from . import __version__, discovery, probes, router, rules, scoring
 from . import ports as portscan
 from .discovery import classify
-from .models import Device, ScanResult, Service
+from .models import Device, RouterInfo, ScanResult, Service
 from .netinfo import NetworkInfo
 from .ports import HOME_PORTS, SERVICE_NAMES, PortState
 
@@ -61,8 +61,10 @@ async def audit(
     """Audit the network `info` describes and return everything found.
 
     `on_progress(stage, done, total)` hears "discover", "ports", "probes"
-    (only with `probe`), "checks" and "done", in that order. "ports" and
-    "probes" start at (0, total) and count up; the others are (0, 0).
+    (only with `probe`), "router" (only when the router answers UPnP questions
+    about its internet connection), "checks" and "done", in that order.
+    "ports" and "probes" start at (0, total) and count up; the others are
+    (0, 0).
     `on_note(source, message)` hears about anything that could not run, and
     the result keeps every note too. `timeout` is the TCP connect timeout.
 
@@ -113,8 +115,9 @@ async def audit(
             classify.classify(device)
 
     devices.sort(key=lambda d: ipaddress.ip_address(d.ip))
+    router_info = await _ask_router(devices, progress, note)
     progress("checks", 0, 0)
-    findings = rules.evaluate(devices, gateway=info.gateway)
+    findings = rules.evaluate(devices, gateway=info.gateway, router=router_info)
     score = scoring.score(findings)
     result = ScanResult(
         version=__version__,
@@ -129,6 +132,7 @@ async def audit(
         score=score,
         ports=port_list,
         notes=notes,
+        router=router_info,
     )
     progress("done", 0, 0)
     return result
@@ -189,6 +193,20 @@ async def _probe(devices: list[Device], timeout: float, progress: Progress, note
         return
     for device in devices:
         device.services = [_probed(found, device.ip, service) for service in device.services]
+
+
+async def _ask_router(devices: list[Device], progress: Progress, note: Note) -> RouterInfo | None:
+    """What the gateway says about its internet side, or None when it does not say."""
+    gateway = next((d for d in devices if d.is_gateway), None)
+    if gateway is None or router.wan_service(gateway) is None:
+        return None
+    progress("router", 0, 0)
+    try:
+        return await router.query(gateway)
+    except Exception as exc:
+        # The devices and their findings are still worth showing.
+        note("router", f"router check failed ({type(exc).__name__}: {exc})")
+        return None
 
 
 def _probed(found: dict[tuple[str, int], Service], ip: str, plain: Service) -> Service:

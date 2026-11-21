@@ -4,9 +4,27 @@ from ipaddress import ip_address, ip_network
 
 import pytest
 
-from hearthscan import __version__, audit, discovery, ports, probes, rules, runner, scoring
+from hearthscan import (
+    __version__,
+    audit,
+    discovery,
+    ports,
+    probes,
+    router,
+    rules,
+    runner,
+    scoring,
+)
 from hearthscan.discovery import arp, classify
-from hearthscan.models import Device, Finding, MdnsInfo, Service
+from hearthscan.models import (
+    Device,
+    Finding,
+    MdnsInfo,
+    PortMapping,
+    RouterInfo,
+    Service,
+    UpnpService,
+)
 from hearthscan.netinfo import Interface, NetworkInfo
 from hearthscan.ports import PortResult, PortState
 
@@ -15,6 +33,16 @@ INFO = NetworkInfo(ETH, "192.168.1.1")
 PORTS = [23, 80, 443, 445, 631, 9100]
 STAMP = re.compile(r"\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\+00:00")
 FINDING = Finding("telnet-open", "high", "192.168.1.1", port=23, params={"port": "23"})
+WAN = UpnpService(
+    "urn:schemas-upnp-org:service:WANIPConnection:1", "http://192.168.1.1:5000/ctl/IPConn"
+)
+ROUTER = RouterInfo(
+    external_ip="10.20.30.40",
+    connection="IP_Routed",
+    status="Connected",
+    uptime=93784,
+    mappings=[PortMapping("TCP", 8443, "192.168.1.100", 443, "Printer web page")],
+)
 
 
 def mac(last_octet):
@@ -57,7 +85,8 @@ def found_by_discovery():
 def net(monkeypatch):
     """Discovery, the port scan, the probes, the rules and scoring, all faked.
 
-    Tests change what answers through net["open"], net["closed"] and net["table"].
+    Tests change what answers through net["open"], net["closed"] and net["table"],
+    and whether the gateway answers UPnP questions through net["wan"].
     """
     calls = {
         "open": {
@@ -74,6 +103,9 @@ def net(monkeypatch):
         "probes": [],
         "rules": [],
         "scores": [],
+        "wan": None,
+        "asked": [],
+        "queries": [],
     }
 
     async def discover(info, *, on_note=None, **kw):
@@ -111,10 +143,19 @@ def net(monkeypatch):
                 on_done((ip, port), found[ip, port])
         return found
 
-    def evaluate(devices, *, gateway=None):
+    def evaluate(devices, *, gateway=None, router=None):
         devices = list(devices)
         calls["rules"].append((devices, gateway))
+        calls["router"] = router
         return [FINDING]
+
+    def wan_service(device):
+        calls["asked"].append(device.ip)
+        return calls["wan"] if device.is_gateway else None
+
+    async def query(device, *, timeout=4.0):
+        calls["queries"].append(device)
+        return ROUTER
 
     def score(findings):
         calls["scores"].append(list(findings))
@@ -126,6 +167,8 @@ def net(monkeypatch):
     monkeypatch.setattr(probes, "probe_all", probe_all)
     monkeypatch.setattr(rules, "evaluate", evaluate)
     monkeypatch.setattr(scoring, "score", score)
+    monkeypatch.setattr(router, "wan_service", wan_service)
+    monkeypatch.setattr(router, "query", query)
     return calls
 
 
@@ -191,8 +234,8 @@ def test_audit_end_to_end(net):
     assert by_ip["192.168.1.30"].seen_by == {"arp"}
     assert by_ip["192.168.1.1"].seen_by == {"arp", "ssdp", "tcp"}
 
-    router = by_ip["192.168.1.1"]
-    assert [(s.port, s.name, s.product) for s in router.services] == [
+    gateway = by_ip["192.168.1.1"]
+    assert [(s.port, s.name, s.product) for s in gateway.services] == [
         (23, "probed-23", "Acme 1.0"),
         (80, "probed-80", "Acme 1.0"),
     ]
@@ -203,14 +246,14 @@ def test_audit_end_to_end(net):
     # Classified again now that the ports are known. This machine stays as is.
     printer = by_ip["192.168.1.100"]
     assert printer.kind == "printer" and "port 9100 open" in printer.evidence
-    assert router.kind == "router"
+    assert gateway.kind == "router"
     me = by_ip["192.168.1.50"]
     assert me.kind == "computer" and me.evidence == ["this computer"]
     assert [s.port for s in me.services] == [445]
     assert "tcp" in me.seen_by
 
-    checked, gateway = net["rules"][0]
-    assert checked == result.devices and gateway == "192.168.1.1"
+    checked, gateway_ip = net["rules"][0]
+    assert checked == result.devices and gateway_ip == "192.168.1.1"
     assert checked[-1].kind == "printer"
     assert net["scores"] == [[FINDING]]
     assert result.findings == [FINDING]
@@ -225,6 +268,11 @@ def test_audit_end_to_end(net):
     assert result.gateway == "192.168.1.1"
     assert result.ports == PORTS
     assert result.notes == notes == [("mdns", "mdns did not run (no multicast)")]
+
+    # The gateway offers no UPnP WAN service, so the router is not asked.
+    assert net["asked"] == ["192.168.1.1"]
+    assert net["queries"] == []
+    assert result.router is None and net["router"] is None
 
 
 def test_without_probes_the_services_stay_plain(net):
@@ -392,6 +440,69 @@ def test_the_result_names_the_network_that_was_swept(net):
     assert result.address == "10.0.5.20"
 
 
+def test_a_gateway_with_a_wan_service_is_asked_about_its_internet_side(net):
+    net["wan"] = WAN
+    result, stages, notes = run_audit()
+    assert stage_names(stages) == ["discover", "ports", "probes", "router", "checks", "done"]
+    assert steps(stages, "router") == [(0, 0)]
+    # Asked after the probes and the reclassification, with the device the result keeps.
+    (asked,) = net["queries"]
+    assert asked is result.device("192.168.1.1")
+    assert asked.kind == "router" and asked.services[0].name == "probed-23"
+    assert result.router is ROUTER
+    assert net["router"] is ROUTER
+    assert notes == [("mdns", "mdns did not run (no multicast)")]
+
+
+def test_the_router_check_runs_without_probes_too(net):
+    net["wan"] = WAN
+    result, stages, _ = run_audit(probe=False)
+    assert stage_names(stages) == ["discover", "ports", "router", "checks", "done"]
+    assert result.router is ROUTER
+
+
+def test_no_gateway_means_no_router_check(net, monkeypatch):
+    net["wan"] = WAN
+
+    async def discover(info, *, on_note=None, **kw):
+        devices = found_by_discovery()
+        for device in devices:
+            device.is_gateway = False
+        return devices
+
+    monkeypatch.setattr(discovery, "discover", discover)
+    result, stages, _ = run_audit()
+    assert "router" not in stage_names(stages)
+    assert net["asked"] == [] and net["queries"] == []
+    assert result.router is None
+
+
+def test_a_router_query_that_raises_becomes_a_note(net, monkeypatch):
+    net["wan"] = WAN
+
+    async def broken(device, **kw):
+        raise RuntimeError("bad answer")
+
+    monkeypatch.setattr(router, "query", broken)
+    result, stages, notes = run_audit()
+    assert ("router", "router check failed (RuntimeError: bad answer)") in notes
+    assert result.notes == notes
+    assert result.router is None and net["router"] is None
+    assert result.findings == [FINDING] and stages[-1] == ("done", 0, 0)
+
+
+def test_a_router_that_says_nothing_leaves_no_router(net, monkeypatch):
+    net["wan"] = WAN
+
+    async def silent(device, **kw):
+        return None
+
+    monkeypatch.setattr(router, "query", silent)
+    result, stages, _ = run_audit()
+    assert "router" in stage_names(stages)
+    assert result.router is None
+
+
 @pytest.mark.parametrize(
     "kw",
     [
@@ -416,9 +527,10 @@ def test_bad_arguments_fail_before_anything_runs(net, kw):
 
 @pytest.mark.parametrize(
     "module, name",
-    [(discovery, "discover"), (ports, "scan"), (probes, "probe_all")],
+    [(discovery, "discover"), (ports, "scan"), (probes, "probe_all"), (router, "query")],
 )
 def test_cancelling_leaves_nothing_running(net, monkeypatch, module, name):
+    net["wan"] = WAN
     reached = []
 
     async def forever(*args, **kw):

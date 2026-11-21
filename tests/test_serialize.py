@@ -10,6 +10,8 @@ from hearthscan.models import (
     Finding,
     MdnsInfo,
     NetbiosInfo,
+    PortMapping,
+    RouterInfo,
     ScanResult,
     Service,
     UpnpInfo,
@@ -99,10 +101,41 @@ def full_result():
         score=58,
         ports=[23, 80, 443],
         notes=[("mdns", "mdns did not run (no multicast)"), ("probes", "slow")],
+        router=RouterInfo(
+            external_ip="100.64.20.30",
+            connection="IP_Routed",
+            status="Connected",
+            uptime=86400,
+            mappings=[
+                PortMapping(
+                    "UDP",
+                    3074,
+                    "192.168.1.30",
+                    3075,
+                    description="Game console",
+                    enabled=False,
+                    lease=3600,
+                    remote_host="203.0.113.9",
+                ),
+                PortMapping("TCP", 8080, "192.168.1.1", 80),
+            ],
+            mappings_complete=False,
+        ),
     )
 
 
-MODELS = (ScanResult, Device, MdnsInfo, UpnpInfo, UpnpService, NetbiosInfo, Service, Finding)
+MODELS = (
+    ScanResult,
+    Device,
+    MdnsInfo,
+    UpnpInfo,
+    UpnpService,
+    NetbiosInfo,
+    Service,
+    Finding,
+    RouterInfo,
+    PortMapping,
+)
 
 
 def set_fields(value, found):
@@ -194,6 +227,8 @@ def test_unknown_fields_are_ignored():
     data["devices"][0]["services"][0]["cves"] = ["X"]
     data["findings"][0]["fixed"] = False
     data["notes"][0]["when"] = "later"
+    data["router"]["isp"] = "Acme Fiber"
+    data["router"]["mappings"][0]["ttl"] = 5
     assert serialize.from_dict(data) == full_result()
 
 
@@ -212,7 +247,7 @@ def test_missing_optional_fields_get_defaults():
     }
     result = serialize.from_dict(minimal)
     assert result.gateway is None and result.score == 100
-    assert result.ports == [] and result.notes == []
+    assert result.ports == [] and result.notes == [] and result.router is None
     device = result.devices[0]
     assert device == Device("10.0.0.1", mdns=MdnsInfo(), services=[Service(22)])
     assert result.findings == [Finding("ssh-open", "info", "10.0.0.1")]
@@ -225,6 +260,71 @@ def test_null_reads_like_a_missing_field():
     data["devices"][0]["kind"] = None
     device = serialize.from_dict(data).devices[0]
     assert device.services == [] and device.seen_by == set() and device.kind == "unknown"
+
+
+def test_router_is_saved_with_its_mappings():
+    data = serialize.to_dict(full_result())
+    assert data["router"] == {
+        "external_ip": "100.64.20.30",
+        "connection": "IP_Routed",
+        "status": "Connected",
+        "uptime": 86400,
+        "mappings": [
+            {
+                "protocol": "UDP",
+                "external_port": 3074,
+                "internal_client": "192.168.1.30",
+                "internal_port": 3075,
+                "description": "Game console",
+                "enabled": False,
+                "lease": 3600,
+                "remote_host": "203.0.113.9",
+            },
+            {
+                "protocol": "TCP",
+                "external_port": 8080,
+                "internal_client": "192.168.1.1",
+                "internal_port": 80,
+                "description": "",
+                "enabled": True,
+                "lease": 0,
+                "remote_host": "",
+            },
+        ],
+        "mappings_complete": False,
+    }
+    back = serialize.from_dict(data)
+    assert back.router == full_result().router
+    assert [m.external_port for m in back.router.mappings] == [3074, 8080]
+
+
+def test_results_without_a_router_still_load():
+    # Saved before the router check existed, or with no UPnP router on the network.
+    data = serialize.to_dict(full_result())
+    del data["router"]
+    assert serialize.from_dict(data).router is None
+    data["router"] = None
+    assert serialize.from_dict(data).router is None
+    assert serialize.to_dict(serialize.from_dict(data))["router"] is None
+
+
+def test_router_fields_missing_from_the_file_get_defaults():
+    data = serialize.to_dict(full_result())
+    data["router"] = {
+        "mappings": [
+            {
+                "protocol": "TCP",
+                "external_port": 22,
+                "internal_client": "192.168.1.9",
+                "internal_port": 22,
+            }
+        ]
+    }
+    assert serialize.from_dict(data).router == RouterInfo(
+        mappings=[PortMapping("TCP", 22, "192.168.1.9", 22)]
+    )
+    data["router"] = {}
+    assert serialize.from_dict(data).router == RouterInfo()
 
 
 @pytest.mark.parametrize("schema", [2, 0, "1", 1.0, True, None])
@@ -298,6 +398,49 @@ def broken(change):
         (lambda d: d["findings"][0].update(ip=3232235777), r"findings\[0\]\.ip should be"),
         (lambda d: d["findings"][0].update(severity="urgent"), "severity should be one of"),
         (lambda d: d["devices"][0]["services"][0].update(facts={"x": None}), r"facts\.x"),
+        (lambda d: d.update(router=[]), "router should be an object"),
+        (lambda d: d["router"].update(external_ip="isp"), r"router\.external_ip should be an IP"),
+        (lambda d: d["router"].update(connection=1), r"router\.connection should be a string"),
+        (lambda d: d["router"].update(status=False), r"router\.status should be a string"),
+        (lambda d: d["router"].update(uptime=-1), r"router\.uptime should be a whole number"),
+        (lambda d: d["router"].update(uptime="60"), r"router\.uptime should be"),
+        (lambda d: d["router"].update(uptime=1.5), r"router\.uptime should be"),
+        (lambda d: d["router"].update(mappings={}), r"router\.mappings should be a list"),
+        (lambda d: d["router"].update(mappings_complete="no"), "mappings_complete should be true"),
+        (
+            lambda d: d["router"]["mappings"].append(80),
+            r"router\.mappings\[2\] should be an object",
+        ),
+        (
+            lambda d: d["router"]["mappings"][0].pop("protocol"),
+            r"mappings\[0\]\.protocol is missing",
+        ),
+        (
+            lambda d: d["router"]["mappings"][0].update(external_port=0),
+            "external_port should be a port",
+        ),
+        (
+            lambda d: d["router"]["mappings"][1].update(internal_port="80"),
+            r"mappings\[1\]\.internal_port",
+        ),
+        (lambda d: d["router"]["mappings"][0].pop("internal_port"), "internal_port is missing"),
+        (
+            lambda d: d["router"]["mappings"][0].update(internal_client="nas.lan"),
+            "internal_client should be an IP",
+        ),
+        (
+            lambda d: d["router"]["mappings"][0].update(description=5),
+            "description should be a string",
+        ),
+        (
+            lambda d: d["router"]["mappings"][0].update(enabled=1),
+            "enabled should be true or false",
+        ),
+        (lambda d: d["router"]["mappings"][0].update(lease=-60), "lease should be a whole number"),
+        (
+            lambda d: d["router"]["mappings"][0].update(remote_host=[]),
+            "remote_host should be a string",
+        ),
     ],
 )
 def test_malformed_results_raise_value_error(change, where):

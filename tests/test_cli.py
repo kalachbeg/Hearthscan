@@ -6,8 +6,18 @@ from ipaddress import ip_address, ip_network
 import pytest
 from rich.console import Console
 
-from hearthscan import cli, i18n, serialize
-from hearthscan.models import Device, Finding, ScanResult, Service
+from hearthscan import cli, i18n, render, serialize
+from hearthscan.i18n import t
+from hearthscan.models import (
+    Device,
+    Finding,
+    PortMapping,
+    RouterInfo,
+    ScanResult,
+    Service,
+    UpnpInfo,
+    UpnpService,
+)
 from hearthscan.netinfo import Interface, NetworkInfo
 from hearthscan.ports import PortResult, PortState
 
@@ -376,3 +386,238 @@ def test_a_narrow_console_replaces_instead_of_crashing(monkeypatch):
     print(TEXT, file=console)
     console.flush()
     assert raw.getvalue().startswith(b"A? ?")
+
+
+# The router command
+
+WAN = UpnpService(
+    "urn:schemas-upnp-org:service:WANIPConnection:1", "http://192.168.1.1:5000/ctl/IPConn"
+)
+RDP = PortMapping("TCP", 3389, "192.168.1.50", 3389, "Remote desktop")
+GAME = PortMapping("UDP", 27015, "192.168.1.77", 27016, "Game server", enabled=False)
+UPTIME = 3 * 86400 + 5 * 3600 + 59 * 60
+
+
+def router_info(*mappings, complete=True):
+    return RouterInfo(
+        external_ip="10.20.30.40",
+        connection="IP_Routed",
+        status="Connected",
+        uptime=UPTIME,
+        mappings=list(mappings),
+        mappings_complete=complete,
+    )
+
+
+def lan_devices(gateway=True):
+    devices = result().devices
+    devices[0].is_gateway = gateway
+    devices[0].upnp = UpnpInfo(friendly_name="Acme Router", services=[WAN])
+    return devices
+
+
+def fake_router(monkeypatch, info, *, devices=None, wan=WAN):
+    """Discovery and the router client, faked. Returns the devices the router was asked as."""
+    devices = lan_devices() if devices is None else devices
+    asked = []
+
+    async def discover(net, **kwargs):
+        return devices
+
+    async def query(device, **kwargs):
+        asked.append(device)
+        return info
+
+    import hearthscan.discovery
+    import hearthscan.router
+
+    monkeypatch.setattr(hearthscan.discovery, "discover", discover)
+    monkeypatch.setattr(hearthscan.router, "wan_service", lambda device: wan)
+    monkeypatch.setattr(hearthscan.router, "query", query)
+    return asked
+
+
+def rendered(parts, width=120):
+    console = Console(file=io.StringIO(), width=width, color_system=None)
+    for part in parts:
+        console.print(part)
+    return console.file.getvalue()
+
+
+def test_router_shows_what_it_says_and_where_its_ports_lead(screens, monkeypatch):
+    asked = fake_router(monkeypatch, router_info(RDP, GAME))
+    assert cli.main(["router", "--lang", "en"], app=screens.app) == 0
+    out = screens.out
+    assert [d.ip for d in asked] == ["192.168.1.1"]
+    assert "Your router" in out
+    assert "10.20.30.40" in out and "IP_Routed" in out and "Connected" in out
+    assert "3 d 5 h" in out
+    assert "Internet port" in out and "Goes to" in out
+    # A device on the network by its name, anything else by address and port.
+    assert "Office-PC (192.168.1.50), port 3389" in out
+    assert "192.168.1.77:27016" in out
+    assert "Remote desktop" in out and "Game server" in out
+    assert "27015" in out and "UDP" in out
+    assert "No ports are opened" not in out
+    assert "only the first ones are shown" not in out
+
+
+def test_router_leaves_out_what_it_did_not_say(screens, monkeypatch):
+    fake_router(monkeypatch, RouterInfo(status="Connected"))
+    assert cli.main(["router", "--lang", "en"], app=screens.app) == 0
+    out = screens.out
+    assert "Connected" in out
+    for label in ("Internet address", "Connection type", "Running for"):
+        assert label not in out
+    assert "No ports are opened to the internet through UPnP." in out
+
+
+def test_router_with_a_cut_short_list(screens, monkeypatch):
+    fake_router(monkeypatch, router_info(RDP, complete=False))
+    cli.main(["router", "--lang", "en"], app=screens.app)
+    assert t("ui.router.incomplete", count=1) in screens.out
+    assert "Remote desktop" in screens.out
+
+
+def test_a_list_that_broke_off_at_once_is_not_called_empty(screens, monkeypatch):
+    fake_router(monkeypatch, router_info(complete=False))
+    cli.main(["router", "--lang", "en"], app=screens.app)
+    assert "No ports are opened" not in screens.out
+    assert t("ui.router.incomplete", count=0) in screens.out
+
+
+def test_router_without_a_gateway(screens, monkeypatch, capsys):
+    asked = fake_router(monkeypatch, router_info(), devices=lan_devices(gateway=False))
+    assert cli.main(["router", "--lang", "en"], app=screens.app) == 0
+    assert "The router does not answer UPnP questions" in screens.out
+    assert asked == []
+    assert cli.main(["router", "--json"], app=screens.app) == 0
+    assert json.loads(capsys.readouterr().out) == {"router": None}
+
+
+def test_router_without_upnp(screens, monkeypatch, capsys):
+    asked = fake_router(monkeypatch, router_info(), wan=None)
+    assert cli.main(["router", "--lang", "en"], app=screens.app) == 0
+    assert "The router does not answer UPnP questions" in screens.out
+    assert "Your router" not in screens.out
+    assert asked == []
+    cli.main(["router", "--json"], app=screens.app)
+    assert json.loads(capsys.readouterr().out) == {"router": None}
+
+
+def test_router_that_answers_nothing_useful(screens, monkeypatch):
+    fake_router(monkeypatch, None)
+    assert cli.main(["router", "--lang", "en"], app=screens.app) == 0
+    assert "The router does not answer UPnP questions" in screens.out
+
+
+def test_router_json(screens, monkeypatch, capsys):
+    fake_router(monkeypatch, router_info(RDP, complete=False))
+    assert cli.main(["router", "--json"], app=screens.app) == 0
+    data = json.loads(capsys.readouterr().out)
+    assert data == {
+        "router": {
+            "external_ip": "10.20.30.40",
+            "connection": "IP_Routed",
+            "status": "Connected",
+            "uptime": UPTIME,
+            "mappings": [
+                {
+                    "protocol": "TCP",
+                    "external_port": 3389,
+                    "internal_client": "192.168.1.50",
+                    "internal_port": 3389,
+                    "description": "Remote desktop",
+                    "enabled": True,
+                    "lease": 0,
+                    "remote_host": "",
+                }
+            ],
+            "mappings_complete": False,
+        }
+    }
+    assert screens.out == ""
+
+
+def test_router_in_turkish(screens, monkeypatch):
+    fake_router(monkeypatch, router_info(RDP))
+    assert cli.main(["router", "--lang", "tr"], app=screens.app) == 0
+    out = screens.out
+    assert "Modeminiz" in out
+    assert "3 gün 5 saat" in out
+    assert "Hedef" in out and "Remote desktop" in out
+
+
+def test_router_without_upnp_in_turkish(screens, monkeypatch):
+    fake_router(monkeypatch, router_info(), wan=None)
+    assert cli.main(["router", "--lang", "tr"], app=screens.app) == 0
+    assert "Modem UPnP sorularına yanıt vermiyor" in screens.out  # noqa: RUF001
+
+
+def test_router_no_network(screens, monkeypatch):
+    monkeypatch.setattr(cli, "local_network", lambda: None)
+    assert cli.main(["router", "--lang", "en"], app=screens.app) == 1
+
+
+def test_router_ctrl_c(screens, monkeypatch):
+    fake_router(monkeypatch, router_info())
+
+    def interrupted(job):
+        job.close()
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(cli, "run", interrupted)
+    assert cli.main(["router", "--lang", "en"], app=screens.app) == 130
+
+
+def test_menu_option_4_asks_the_router(monkeypatch):
+    monkeypatch.setattr(cli, "local_network", lambda: INFO)
+    fake_router(monkeypatch, router_info(RDP))
+    screens = Screens(terminal=True)
+    monkeypatch.setattr(cli.sys, "stdin", Tty())
+    answers = iter(["4", "", "q"])
+    monkeypatch.setattr(builtins, "input", lambda *a: next(answers))
+    assert cli.main(["--lang", "en"], app=screens.app) == 0
+    assert "4  Check my router" in screens.out
+    assert "Remote desktop" in screens.out
+
+
+def test_what_the_router_sends_is_not_markup(screens, monkeypatch):
+    info = router_info(
+        PortMapping("TCP", 8080, "192.168.1.60", 80, "[bold red]x[/] [/]"),
+        PortMapping("TCP", 8081, "192.168.1.61", 80, "[link=http://192.168.1.9]y[/link]"),
+    )
+    info.status = "[blink]Connected"
+    fake_router(monkeypatch, info)
+    assert cli.main(["router", "--lang", "en"], app=screens.app) == 0
+    out = screens.out
+    assert "[bold red]x[/] [/]" in out
+    assert "[link=http://192.168.1.9]y[/link]" in out
+    assert "[blink]Connected" in out
+    assert "\x1b]8" not in out
+
+
+def test_narrow_screens_put_the_protocol_with_the_port():
+    wide = rendered(render.router_view(router_info(RDP), lan_devices(), 120))
+    assert "Protocol" in wide and "3389/TCP" not in wide
+    narrow = rendered(render.router_view(router_info(RDP), lan_devices(), 60), width=60)
+    assert "Protocol" not in narrow
+    assert "3389/TCP" in narrow
+
+
+def test_scan_result_shows_the_router_between_findings_and_devices(screens, monkeypatch):
+    scan_result = result(TELNET)
+    scan_result.router = router_info(RDP)
+    fake_audit(monkeypatch, scan_result)
+    assert cli.main(["scan", "--lang", "en"], app=screens.app) == 0
+    out = screens.out
+    title = out.index("Your router")
+    assert out.index("Telnet is switched on") < title < out.index("Devices on your network")
+    assert out.index("Remote desktop") < out.index("Devices on your network")
+
+
+def test_result_view_without_a_router():
+    out = rendered(render.result_view(result(TELNET), width=120))
+    assert "Your router" not in out
+    assert "Ports opened to the internet" not in out
+    assert "Telnet is switched on" in out and "Devices on your network" in out

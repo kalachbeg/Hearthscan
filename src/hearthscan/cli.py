@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import contextlib
+import dataclasses
 import json
 import math
 import os
@@ -29,7 +30,7 @@ from rich.text import Text
 
 from . import __version__, i18n, render, serialize
 from .i18n import t
-from .models import SEVERITIES, ScanResult
+from .models import SEVERITIES, Device, RouterInfo, ScanResult
 from .netinfo import NetworkInfo, local_network
 from .ports import HOME_PORTS, SERVICE_NAMES, PortResult, PortState, parse_ports, scan
 from .runner import run
@@ -193,6 +194,34 @@ class App:
         self.out.print(Text(t("ui.summary.devices", count=len(devices)), style="dim"))
         return EXIT_OK
 
+    def show_router(self, *, as_json: bool = False) -> int:
+        from . import discovery, router
+
+        info = self.network()
+
+        async def ask(stages: _Stages) -> tuple[list[Device], RouterInfo | None]:
+            stages("discover", 0, 0)
+            devices = await discovery.discover(info, on_note=self.note)
+            gateway = next((d for d in devices if d.is_gateway), None)
+            if gateway is None or router.wan_service(gateway) is None:
+                return devices, None
+            stages("router", 0, 0)
+            return devices, await router.query(gateway)
+
+        with self._progress() as progress:
+            devices, found = self._run(ask(_Stages(progress)))
+        if as_json:
+            data = None if found is None else dataclasses.asdict(found)
+            print(json.dumps({"router": data}, indent=2))
+            return EXIT_OK
+        if found is None:
+            self.out.print(Text(t("ui.router.no_upnp")))
+            return EXIT_OK
+        self.out.print(Text(t("ui.router.title"), style="bold"))
+        for part in render.router_view(found, devices, self.out.width):
+            self.out.print(part)
+        return EXIT_OK
+
     def full_scan(
         self,
         *,
@@ -292,6 +321,7 @@ class App:
             "1": ("ui.menu.scan", self.full_scan),
             "2": ("ui.menu.devices", self.list_devices),
             "3": ("ui.menu.network", self.show_network),
+            "4": ("ui.menu.router", self.show_router),
         }
         try:
             info = local_network()
@@ -390,6 +420,15 @@ def build_parser() -> argparse.ArgumentParser:
     )
     net_cmd.add_argument("--json", action="store_true", help="print it as JSON")
 
+    router_cmd = commands.add_parser(
+        "router",
+        parents=[common],
+        help="show what the router says about itself and the ports it opened to the internet",
+        description="Ask the router over UPnP for its internet address, its connection and "
+        "the ports it forwards from the internet. Nothing on the router is changed.",
+    )
+    router_cmd.add_argument("--json", action="store_true", help="print it as JSON")
+
     ports_cmd = commands.add_parser(
         "ports",
         parents=[common],
@@ -449,6 +488,8 @@ def main(argv: Sequence[str] | None = None, app: App | None = None) -> int:
             return app.list_devices(as_json=args.json)
         if args.command == "net":
             return app.show_network(as_json=args.json)
+        if args.command == "router":
+            return app.show_router(as_json=args.json)
         if args.command == "ports":
             return app.scan_ports(args.targets, args.ports, args.timeout)
         return app.menu(parser.format_help)

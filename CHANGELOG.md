@@ -50,6 +50,12 @@ in your own home.
   `--output`, and `--fail-on high` makes it exit with status 3 when something
   that serious turns up, for use in scripts.
 - `hearthscan devices --json` and `hearthscan net --json`.
+- Router checks over UPnP: the internet address, the connection type and every
+  port the router forwards from the internet, with a warning when one leads to
+  a risky service such as Telnet, Remote Desktop or a camera stream. Double NAT
+  and carrier-grade NAT are pointed out too. These checks only ask the router
+  for information; they never change anything on it. `hearthscan router` shows
+  them on their own.
 
 ### Removed
 

@@ -18,7 +18,7 @@ from rich.text import Text
 
 from . import __version__, scoring
 from .i18n import t
-from .models import SEVERITIES, Device, Finding, ScanResult
+from .models import SEVERITIES, Device, Finding, PortMapping, RouterInfo, ScanResult
 from .netinfo import NetworkInfo
 
 SEVERITY_STYLES = {
@@ -174,6 +174,76 @@ def finding_block(finding: Finding, device: Device | None) -> RenderableType:
     return Padding(Group(*rows), (0, 0, 1, 2))
 
 
+def _uptime(seconds: int) -> str:
+    days, rest = divmod(seconds, 86400)
+    return t("ui.router.uptime_value", days=days, hours=rest // 3600)
+
+
+def _forwards_to(mapping: PortMapping, devices: dict[str, Device]) -> str:
+    device = devices.get(mapping.internal_client)
+    if device is None:
+        return f"{mapping.internal_client}:{mapping.internal_port}"
+    return t(
+        "ui.finding.where",
+        device=device_label(device, mapping.internal_client),
+        port=mapping.internal_port,
+    )
+
+
+def mappings_table(
+    mappings: Iterable[PortMapping], devices: Iterable[Device], *, width: int | None = None
+) -> Table:
+    """The port forwards a router lists. Switched off ones are dimmed."""
+    by_ip = {device.ip: device for device in devices}
+    wide = width is None or width >= NARROW
+    table = Table(box=box.SIMPLE_HEAD, header_style="bold", pad_edge=False)
+    table.add_column(t("ui.col.external"), no_wrap=True)
+    if wide:
+        table.add_column(t("ui.col.protocol"), no_wrap=True)
+    table.add_column(t("ui.col.forwards_to"), min_width=12)
+    table.add_column(t("ui.col.description"), min_width=8, max_width=40)
+    for mapping in mappings:
+        port = str(mapping.external_port)
+        row: list[Text] = [Text(port if wide else f"{port}/{mapping.protocol}")]
+        if wide:
+            row.append(Text(mapping.protocol))
+        row += [Text(_forwards_to(mapping, by_ip)), Text(mapping.description)]
+        table.add_row(*row, style=None if mapping.enabled else "dim")
+    return table
+
+
+def router_view(
+    info: RouterInfo, devices: Iterable[Device], width: int | None = None
+) -> list[RenderableType]:
+    """What the router said about its internet side, then the ports it forwards."""
+    grid = Table.grid(padding=(0, 3))
+    grid.add_column(style="dim")
+    grid.add_column()
+    rows = [
+        ("ui.router.external_ip", info.external_ip),
+        ("ui.router.connection", info.connection),
+        ("ui.router.status", info.status),
+        ("ui.router.uptime", _uptime(info.uptime) if info.uptime is not None else None),
+    ]
+    for key, value in rows:
+        if value:
+            grid.add_row(Text(t(key)), Text(value))
+
+    parts: list[RenderableType] = []
+    if grid.row_count:
+        parts += [grid, Text()]
+    parts.append(Text(t("ui.router.mappings"), style="bold"))
+    if info.mappings:
+        parts.append(mappings_table(info.mappings, devices, width=width))
+    elif info.mappings_complete:
+        # Not when the list broke off: the forwards past that point are unknown.
+        parts.append(Padding(Text(t("ui.router.none"), style="green"), (0, 0, 0, 2)))
+    if not info.mappings_complete:
+        incomplete = t("ui.router.incomplete", count=len(info.mappings))
+        parts.append(Text(incomplete, style="yellow"))
+    return parts
+
+
 def result_view(
     result: ScanResult,
     elapsed: float | None = None,
@@ -182,7 +252,7 @@ def result_view(
     notes: bool = True,
     width: int | None = None,
 ) -> list[RenderableType]:
-    """Everything `hearthscan scan` shows, top to bottom: score, risks, then devices.
+    """Everything `hearthscan scan` shows, top to bottom: score, risks, router, devices.
 
     `notes=False` leaves out result.notes, for when they were already shown
     while the scan ran.
@@ -210,6 +280,11 @@ def result_view(
             if finding.rule == "unknown-device":
                 fix = t(f"rule.{finding.rule}.fix", **finding.params)
                 parts.append(Padding(Text(fix, style="dim"), (0, 0, 0, 4)))
+        parts.append(Text())
+
+    if result.router is not None:
+        parts += [Text(t("ui.router.title"), style="bold"), Text()]
+        parts += router_view(result.router, result.devices, width)
         parts.append(Text())
 
     parts += [Text(t("ui.devices.title"), style="bold"), devices_table(result.devices, width=width)]

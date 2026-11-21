@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+  <SOAP-ENV:Body>
+    <m:GetStatusInfoResponse xmlns:m="urn:schemas-upnp-org:service:WANIPConnection:1">
+      <NewConnectionStatus xmlns:dt="urn:schemas-microsoft-com:datatypes" dt:dt="string">  Connected  </NewConnectionStatus>
+      <NewLastConnectionError xmlns:dt="urn:schemas-microsoft-com:datatypes" dt:dt="string">ERROR_NONE</NewLastConnectionError>
+      <NewUptime xmlns:dt="urn:schemas-microsoft-com:datatypes" dt:dt="ui4">4012</NewUptime>
+    </m:GetStatusInfoResponse>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

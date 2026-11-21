@@ -1,8 +1,27 @@
 import pytest
 
-from hearthscan.models import SEVERITIES, Device, Service, UpnpInfo, UpnpService
+from hearthscan.models import (
+    SEVERITIES,
+    Device,
+    PortMapping,
+    RouterInfo,
+    Service,
+    UpnpInfo,
+    UpnpService,
+)
 from hearthscan.ports import SERVICE_NAMES
-from hearthscan.rules import MAX_EVIDENCE, RULE_IDS, RULES, Context, Rule, evaluate, rule
+from hearthscan.rules import (
+    MAX_EVIDENCE,
+    MAX_FORWARDS,
+    RULE_IDS,
+    RULES,
+    Context,
+    Rule,
+    evaluate,
+    rule,
+)
+
+FORWARD = {"external_port", "internal_port", "protocol", "description"}
 
 CATALOG = (
     ("telnet-open", "high", {"port"}),
@@ -35,6 +54,10 @@ CATALOG = (
     ("smb-open", "info", {"port"}),
     ("ssh-open", "info", {"port", "product"}),
     ("unknown-device", "info", set()),
+    ("port-forward-risky", "high", FORWARD),
+    ("port-forward", "low", FORWARD),
+    ("double-nat", "info", {"external_ip"}),
+    ("cgnat", "info", {"external_ip"}),
 )
 
 IGD = "urn:schemas-upnp-org:device:InternetGatewayDevice:1"
@@ -45,16 +68,16 @@ def host(*services, ip="192.168.1.20", kind="computer", **kwargs):
     return Device(ip, kind=kind, services=list(services), **kwargs)
 
 
-def found(*devices, gateway=None):
-    return evaluate(devices, gateway=gateway)
+def found(*devices, gateway=None, router=None):
+    return evaluate(devices, gateway=gateway, router=router)
 
 
-def only(rule_id, *devices, gateway=None):
-    return [f for f in found(*devices, gateway=gateway) if f.rule == rule_id]
+def only(rule_id, *devices, gateway=None, router=None):
+    return [f for f in found(*devices, gateway=gateway, router=router) if f.rule == rule_id]
 
 
-def ids(*devices, gateway=None):
-    return {f.rule for f in found(*devices, gateway=gateway)}
+def ids(*devices, gateway=None, router=None):
+    return {f.rule for f in found(*devices, gateway=gateway, router=router)}
 
 
 def test_rules_follow_the_catalog():
@@ -65,7 +88,8 @@ def test_rules_follow_the_catalog():
 
 
 def test_rule_lookup():
-    assert rule("ssh-open") is RULES[-2]
+    assert rule("ssh-open") is RULES[RULE_IDS.index("ssh-open")]
+    assert rule("cgnat") is RULES[-1]
     with pytest.raises(KeyError):
         rule("no-such-rule")
 
@@ -125,8 +149,20 @@ def every_rule_network():
     ]
 
 
+def every_rule_router(external_ip):
+    return RouterInfo(
+        external_ip=external_ip,
+        mappings=[
+            PortMapping("TCP", 3389, "192.168.1.40", 3389, "Remote Desktop"),
+            PortMapping("UDP", 3074, "192.168.1.50", 3074),
+        ],
+    )
+
+
 def test_every_finding_has_the_catalog_params_as_strings():
-    findings = evaluate(every_rule_network())
+    network = every_rule_network()
+    findings = evaluate(network, router=every_rule_router("10.0.0.2"))
+    findings += evaluate(network, router=every_rule_router("100.64.0.2"))
     assert {f.rule for f in findings} == set(RULE_IDS)
     params = {i: keys for i, _, keys in CATALOG}
     severities = {i: s for i, s, _ in CATALOG}
@@ -136,6 +172,8 @@ def test_every_finding_has_the_catalog_params_as_strings():
         assert finding.severity == severities[finding.rule]
         if "port" in finding.params:
             assert finding.params["port"] == str(finding.port)
+        elif "internal_port" in finding.params:
+            assert finding.params["internal_port"] == str(finding.port)
         else:
             assert finding.port is None
 
@@ -620,3 +658,295 @@ def test_rules_never_mention_the_device_name():
     for finding in found(device):
         assert "kitchen" not in (finding.evidence or "")
         assert "kitchen" not in "".join(finding.params.values())
+
+
+# The router rules.
+
+RISKY = (21, 23, 135, 139, 445, 554, 1433, 2375, 3306, 3389, 5432, 5555, 5900, 6379)
+RISKY += (9200, 11211, 27017, 34567, 37777)
+PUBLIC = "203.0.113.7"
+
+
+def gateway_device(*services):
+    return host(*services, ip="192.168.1.1", kind="router", is_gateway=True)
+
+
+def forward(external, internal, client="192.168.1.20", protocol="TCP", **kwargs):
+    return PortMapping(protocol, external, client, internal, **kwargs)
+
+
+def router(*mappings, external_ip=PUBLIC, **kwargs):
+    return RouterInfo(external_ip=external_ip, mappings=list(mappings), **kwargs)
+
+
+def forwards(*mappings, devices=None):
+    """The port forward findings for these mappings on a small network."""
+    devices = devices if devices is not None else [gateway_device(), host()]
+    findings = evaluate(devices, router=router(*mappings))
+    return [f for f in findings if f.rule.startswith("port-forward")]
+
+
+def test_port_forward_risky():
+    mapping = forward(3389, 3389, description="Remote Desktop")
+    [finding] = forwards(mapping)
+    assert (finding.rule, finding.severity, finding.ip, finding.port) == (
+        "port-forward-risky",
+        "high",
+        "192.168.1.20",
+        3389,
+    )
+    assert finding.params == {
+        "external_port": "3389",
+        "internal_port": "3389",
+        "protocol": "TCP",
+        "description": "Remote Desktop",
+    }
+    assert finding.evidence == "TCP 3389 to 192.168.1.20:3389 (Remote Desktop)"
+
+
+@pytest.mark.parametrize("port", RISKY)
+def test_every_risky_port(port):
+    [finding] = forwards(forward(40000, port))
+    assert (finding.rule, finding.port) == ("port-forward-risky", port)
+
+
+def test_the_internal_port_decides_what_is_risky():
+    [finding] = forwards(forward(3389, 8080))
+    assert (finding.rule, finding.port) == ("port-forward", 8080)
+    [finding] = forwards(forward(8080, 3389))
+    assert (finding.rule, finding.port) == ("port-forward-risky", 3389)
+
+
+def test_port_forward():
+    [finding] = forwards(forward(3074, 3074, client="192.168.1.20", protocol="udp"))
+    assert (finding.rule, finding.severity, finding.ip, finding.port) == (
+        "port-forward",
+        "low",
+        "192.168.1.20",
+        3074,
+    )
+    assert finding.params == {
+        "external_port": "3074",
+        "internal_port": "3074",
+        "protocol": "UDP",
+        "description": "",
+    }
+    assert finding.evidence == "UDP 3074 to 192.168.1.20:3074"
+
+
+def test_no_router_no_router_findings():
+    assert forwards() == []
+    devices = [gateway_device(), host(Service(23, name="telnet"))]
+    without = evaluate(devices)
+    assert evaluate(devices, router=None) == without
+    assert evaluate(devices, router=RouterInfo()) == without
+    assert [f.rule for f in without] == ["telnet-open"]
+
+
+def test_disabled_forwards_raise_nothing():
+    mappings = [forward(3389, 3389, enabled=False), forward(8080, 80, enabled=False)]
+    assert forwards(*mappings) == []
+
+
+def test_identical_forwards_count_once():
+    mapping = forward(8080, 80, description="web")
+    twin = forward(8080, 80, description="web")
+    assert len(forwards(mapping, twin)) == 1
+    # A router that lists one forward with a new description or lease is still one forward.
+    assert len(forwards(mapping, forward(8080, 80, description="other", lease=60))) == 1
+
+
+def test_each_forward_is_its_own_finding():
+    findings = forwards(
+        forward(8081, 80),
+        forward(8080, 80),
+        forward(3074, 3074, protocol="UDP"),
+        forward(3074, 3074, protocol="TCP"),
+    )
+    assert [(f.port, f.params["protocol"], f.params["external_port"]) for f in findings] == [
+        (80, "TCP", "8080"),
+        (80, "TCP", "8081"),
+        (3074, "TCP", "3074"),
+        (3074, "UDP", "3074"),
+    ]
+
+
+def test_forward_to_an_unknown_client_goes_on_the_gateway():
+    [finding] = forwards(forward(8080, 80, client="192.168.1.99"))
+    assert (finding.ip, finding.port) == ("192.168.1.1", 80)
+    assert finding.evidence == "TCP 8080 to 192.168.1.99:80"
+    [odd] = forwards(forward(2323, 23, client="cam\x00era\x1b[0m"))
+    assert (odd.rule, odd.ip, odd.port) == ("port-forward-risky", "192.168.1.1", 23)
+    assert odd.evidence == "TCP 2323 to cam era [0m:23"
+    [empty] = forwards(forward(8080, 80, client=""))
+    assert empty.ip == "192.168.1.1"
+
+
+def test_forward_to_the_gateway_itself_is_reported_once():
+    [finding] = forwards(forward(8443, 443, client="192.168.1.1"))
+    assert (finding.ip, finding.port) == ("192.168.1.1", 443)
+
+
+def test_forward_client_matches_the_device_in_any_spelling():
+    devices = [gateway_device(), host(ip="fd00::20")]
+    [finding] = forwards(forward(8080, 80, client="fd00:0:0::20"), devices=devices)
+    assert finding.ip == "fd00::20"
+    assert finding.evidence == "TCP 8080 to [fd00::20]:80"
+
+
+def test_router_findings_without_a_listed_gateway():
+    mappings = [forward(8080, 80, client="192.168.1.99"), forward(3389, 3389)]
+    info = router(*mappings, external_ip="10.0.0.2")
+    findings = evaluate([host()], gateway="192.168.1.1", router=info)
+    assert [(f.rule, f.ip, f.port) for f in findings] == [
+        ("port-forward-risky", "192.168.1.20", 3389),
+        ("port-forward", "192.168.1.1", 80),
+        ("double-nat", "192.168.1.1", None),
+    ]
+    # Nothing to put them on: only the forward to a known device is left.
+    findings = evaluate([host()], router=info)
+    assert [(f.rule, f.ip) for f in findings] == [("port-forward-risky", "192.168.1.20")]
+
+
+def test_a_device_listed_twice_gets_its_forward_once():
+    findings = forwards(forward(8080, 80), devices=[gateway_device(), host(), host()])
+    assert len(findings) == 1
+
+
+def test_remote_host_shows_in_the_evidence():
+    [finding] = forwards(forward(22, 22, remote_host="198.51.100.4"))
+    assert finding.evidence == "TCP 22 to 192.168.1.20:22; only from: 198.51.100.4"
+
+
+def test_forward_text_from_the_router_is_cleaned_and_capped():
+    mapping = forward(
+        8080,
+        80,
+        protocol="tcp\x00‮" + "P" * 50,
+        description="‮hostile\r\n\x1b[31m" + "D" * 500,
+        remote_host="r" * 500,
+    )
+    [finding] = forwards(mapping)
+    assert finding.params["protocol"] == "TCP PPPP"
+    assert finding.params["description"].startswith("hostile [31mDDD")
+    assert len(finding.params["description"]) <= 80
+    assert len(finding.evidence) <= MAX_EVIDENCE
+    for text in (*finding.params.values(), finding.evidence):
+        assert all(ch.isprintable() for ch in text)
+
+
+@pytest.mark.parametrize(
+    "external, internal",
+    [(8080, 0), (8080, 65536), (8080, -1), (8080, True), (-1, 80), (70000, 80), ("x", 80)],
+)
+def test_forwards_with_impossible_ports_are_skipped(external, internal):
+    assert forwards(forward(external, internal)) == []
+
+
+def test_ports_as_text_and_external_port_zero():
+    [finding] = forwards(forward("8080", "80"))
+    assert finding.params["external_port"] == "8080" and finding.port == 80
+    [wildcard] = forwards(forward(0, 80))
+    assert wildcard.params["external_port"] == "0"
+
+
+def test_garbage_in_the_mapping_list_is_ignored():
+    info = router("not a mapping", None, forward(8080, 80))
+    findings = evaluate([gateway_device(), host()], router=info)
+    assert [f.rule for f in findings] == ["port-forward"]
+    assert evaluate([gateway_device()], router=RouterInfo(mappings="nonsense")) == []
+
+
+def test_a_huge_mapping_list_is_capped():
+    mappings = [forward(port, 8000) for port in range(1, 3001)]
+    findings = forwards(*mappings)
+    assert len(findings) == MAX_FORWARDS
+
+
+@pytest.mark.parametrize(
+    "external_ip, rule_id",
+    [
+        ("10.0.0.2", "double-nat"),
+        ("10.255.255.254", "double-nat"),
+        ("172.16.0.1", "double-nat"),
+        ("172.31.255.1", "double-nat"),
+        ("192.168.0.10", "double-nat"),
+        ("100.64.0.1", "cgnat"),
+        ("100.127.255.254", "cgnat"),
+        (" 100.100.1.2 ", "cgnat"),
+        ("::ffff:10.0.0.2", "double-nat"),
+    ],
+)
+def test_double_nat_and_cgnat(external_ip, rule_id):
+    info = RouterInfo(external_ip=external_ip, connection="IP_Routed")
+    [finding] = found(gateway_device(), host(), router=info)
+    assert (finding.rule, finding.ip, finding.port) == (rule_id, "192.168.1.1", None)
+    address = external_ip.strip().removeprefix("::ffff:")
+    assert finding.params == {"external_ip": address}
+    assert finding.evidence == f"external IP: {address}; connection: IP_Routed"
+
+
+@pytest.mark.parametrize(
+    "external_ip",
+    [
+        PUBLIC,
+        "172.32.0.1",
+        "100.128.0.1",
+        "100.63.255.255",
+        "0.0.0.0",
+        "169.254.10.1",
+        "2001:db8::1",
+        "fd00::1",
+        "",
+        None,
+        "10.0.0.2 extra",
+        "10.0.0.2\x00junk",
+        "1" * 5000,
+    ],
+)
+def test_no_nat_finding_for_other_addresses(external_ip):
+    assert found(gateway_device(), router=RouterInfo(external_ip=external_ip)) == []
+
+
+def test_nat_findings_go_on_the_gateway_only():
+    info = RouterInfo(external_ip="10.0.0.2")
+    assert found(host(), router=info) == []
+    assert ids(gateway_device(), router=info) == {"double-nat"}
+    assert ids(host(ip="192.168.1.1"), gateway="192.168.1.1", router=info) == {"double-nat"}
+    [finding] = only("double-nat", gateway_device(), router=info)
+    assert finding.evidence == "external IP: 10.0.0.2"
+
+
+def test_router_findings_join_the_usual_order():
+    gateway = gateway_device(Service(7547, name="cwmp"))
+    camera = host(Service(554, name="rtsp", auth="none"), ip="192.168.1.30", kind="camera")
+    pc = host(Service(22, name="ssh"), ip="192.168.1.20")
+    info = router(
+        forward(3074, 3074, client="192.168.1.20", protocol="UDP"),
+        forward(8554, 554, client="192.168.1.30"),
+        forward(2222, 22, client="192.168.1.20"),
+        forward(8080, 80, client="192.168.1.99"),
+        external_ip="100.70.1.2",
+    )
+    findings = evaluate([pc, camera, gateway], router=info)
+    assert [(f.rule, f.ip, f.port) for f in findings] == [
+        ("rtsp-no-auth", "192.168.1.30", 554),
+        ("port-forward-risky", "192.168.1.30", 554),
+        ("port-forward", "192.168.1.1", 80),
+        ("tr069-open", "192.168.1.1", 7547),
+        ("port-forward", "192.168.1.20", 22),
+        ("port-forward", "192.168.1.20", 3074),
+        ("cgnat", "192.168.1.1", None),
+        ("ssh-open", "192.168.1.20", 22),
+    ]
+
+
+def test_router_rules_work_on_their_own():
+    info = router(forward(8080, 80), forward(2323, 23, client="192.168.1.99"))
+    context = Context(router=info, addresses=frozenset({"192.168.1.20"}))
+    [finding] = rule("port-forward").apply(host(), context)
+    assert finding.ip == "192.168.1.20"
+    assert rule("port-forward-risky").apply(host(), context) == []
+    [risky] = rule("port-forward-risky").apply(gateway_device(), context)
+    assert (risky.ip, risky.port) == ("192.168.1.1", 23)
+    assert rule("double-nat").apply(gateway_device(), context) == []

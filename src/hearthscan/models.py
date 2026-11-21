@@ -211,6 +211,32 @@ class Finding:
 
 
 @dataclass(slots=True)
+class PortMapping:
+    """A port forward on the router, as its UPnP service lists it."""
+
+    protocol: str  # "TCP" or "UDP"
+    external_port: int
+    internal_client: str  # the device it forwards to
+    internal_port: int
+    description: str = ""
+    enabled: bool = True
+    lease: int = 0  # seconds left, 0 for permanent
+    remote_host: str = ""  # empty when anyone on the internet may connect
+
+
+@dataclass(slots=True)
+class RouterInfo:
+    """What the router says about itself over UPnP. Every field may be missing."""
+
+    external_ip: str | None = None
+    connection: str | None = None  # "IP_Routed", "PPPoE" ...
+    status: str | None = None  # "Connected", "Disconnected" ...
+    uptime: int | None = None  # seconds
+    mappings: list[PortMapping] = field(default_factory=list)
+    mappings_complete: bool = True  # False when the list was cut short
+
+
+@dataclass(slots=True)
 class ScanResult:
     version: str  # Hearthscan version that made it
     started: str  # ISO 8601, UTC
@@ -224,6 +250,7 @@ class ScanResult:
     score: int = 100
     ports: list[int] = field(default_factory=list)  # what was scanned
     notes: list[tuple[str, str]] = field(default_factory=list)  # (source, message)
+    router: RouterInfo | None = None
 
     def device(self, ip: str) -> Device | None:
         return next((d for d in self.devices if d.ip == ip), None)

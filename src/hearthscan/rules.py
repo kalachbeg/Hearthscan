@@ -4,6 +4,11 @@ Every rule looks at one device at a time. Rule ids and the params of each
 finding are shared with the texts that explain them, so neither may change
 without the other.
 
+The router rules read what the router said about itself over UPnP. A port
+forward is reported on the device it leads to, or on the router when that is
+no device on the network. The router's internet address is reported on the
+router.
+
 A service is matched by the name a probe gave it as well as by its port, so a
 service on an unusual port still counts. A port only stops counting for its
 usual protocol when a probe saw another protocol there that these rules know
@@ -15,15 +20,18 @@ from __future__ import annotations
 import ipaddress
 import unicodedata
 from collections.abc import Callable, Iterable, Iterator
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import NamedTuple
 
-from .models import SEVERITIES, Device, Finding, Service
+from .models import SEVERITIES, Device, Finding, PortMapping, RouterInfo, Service
 
 MAX_EVIDENCE = 200
 _MAX_PART = 120
 _MAX_PARAM = 80
 _MAX_FACT = 64
+
+# More port forwards than any home router keeps. The rest are not looked at.
+MAX_FORWARDS = 1024
 
 OLD_TLS = ("TLSv1", "TLSv1.1")
 
@@ -34,6 +42,16 @@ _LOGINS = {
 }
 _WEB_NAMES = frozenset({"http", "https"})
 _PORT_MAPPING = ("wanipconnection", "wanpppconnection")
+
+# Services that should never be forwarded from the internet, by internal port.
+_RISKY_PORTS = frozenset(
+    {21, 23, 135, 139, 445, 554, 1433, 2375, 3306, 3389, 5432, 5555, 5900, 6379, 9200, 11211}
+    | {27017, 34567, 37777}
+)
+_PRIVATE = tuple(
+    ipaddress.IPv4Network(net) for net in ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16")
+)
+_SHARED = (ipaddress.IPv4Network("100.64.0.0/10"),)
 
 
 @dataclass(frozen=True, slots=True)
@@ -120,10 +138,34 @@ class Hit(NamedTuple):
 
 
 @dataclass(frozen=True, slots=True)
+class Forward:
+    """An enabled port forward from the router, cleaned up."""
+
+    protocol: str
+    external_port: int
+    client: str  # the address it leads to, or the cleaned text when that is no address
+    internal_port: int
+    description: str = ""
+    remote_host: str = ""
+    target: str | None = None  # the device on the network it leads to, None for the router
+
+
+@dataclass(frozen=True, slots=True)
 class Context:
-    """What rules need to know beyond the device itself."""
+    """What rules need to know beyond the device itself.
+
+    `addresses` are the devices on the network: a port forward to any other
+    address is reported on the router. `forwards` is made from `router`.
+    """
 
     gateway: str | None = None
+    router: RouterInfo | None = None
+    addresses: frozenset[str] = frozenset()
+    forwards: tuple[Forward, ...] = field(init=False, default=(), repr=False, compare=False)
+
+    def __post_init__(self) -> None:
+        known = frozenset(filter(None, map(_address, self.addresses)))
+        object.__setattr__(self, "forwards", _forwards(self.router, known))
 
     def is_gateway(self, device: Device) -> bool:
         if device.is_gateway:
@@ -139,18 +181,31 @@ class Rule:
     id: str
     severity: str
     check: Check
+    # False for the port forward rules: several forwards can lead to one port.
+    per_port: bool = True
+
+    def identity(self, finding: Finding) -> tuple:
+        """What tells two findings of this rule apart."""
+        if self.per_port:
+            return (finding.ip, finding.port)
+        return (finding.ip, finding.port, tuple(sorted(finding.params.items())), finding.evidence)
 
     def apply(self, device: Device, context: Context) -> list[Finding]:
-        """Run the rule on one device. Each port is reported once at most."""
+        """Run the rule on one device.
+
+        Each port is reported once at most, or for a rule that is not per port,
+        each distinct finding once.
+        """
         findings: list[Finding] = []
-        seen: set[int | None] = set()
+        seen: set[tuple] = set()
         for hit in self.check(device, context):
-            if hit.port in seen:
-                continue
-            seen.add(hit.port)
-            findings.append(
-                Finding(self.id, self.severity, device.ip, hit.port, dict(hit.params), hit.evidence)
+            finding = Finding(
+                self.id, self.severity, device.ip, hit.port, dict(hit.params), hit.evidence
             )
+            key = self.identity(finding)
+            if key not in seen:
+                seen.add(key)
+                findings.append(finding)
         return findings
 
 
@@ -176,6 +231,20 @@ def _number(value: object) -> str:
     """Digits only, as a canonical decimal. Empty for anything else."""
     text = _clean(value, 12)
     return str(int(text)) if text.isascii() and text.isdigit() else ""
+
+
+def _port(value: object, lowest: int = 1) -> int | None:
+    """A port number from `lowest` to 65535, else None."""
+    text = "" if isinstance(value, bool) else _number(value)
+    return int(text) if text and lowest <= int(text) <= 65535 else None
+
+
+def _address(value: object) -> str | None:
+    """The canonical form of an IP address, None for anything else."""
+    try:
+        return str(ipaddress.ip_address(_clean(value, 64)))
+    except ValueError:
+        return None
 
 
 def _name(service: Service) -> str:
@@ -371,6 +440,99 @@ def _unknown_device(device: Device, context: Context) -> Iterator[Hit]:
         yield Hit(None, {}, _evidence(_labeled("vendor", device.vendor)))
 
 
+def _forwards(router: RouterInfo | None, addresses: frozenset[str]) -> tuple[Forward, ...]:
+    """The enabled forwards a router listed, each once, with the device each leads to."""
+    if router is None or not isinstance(router.mappings, (list, tuple)):
+        return ()
+    forwards: dict[tuple, Forward] = {}
+    for mapping in router.mappings[:MAX_FORWARDS]:
+        if not isinstance(mapping, PortMapping) or not mapping.enabled:
+            continue
+        external = _port(mapping.external_port, lowest=0)
+        internal = _port(mapping.internal_port)
+        if external is None or internal is None:
+            continue
+        protocol = _clean(mapping.protocol, 8).upper()
+        text = _clean(mapping.internal_client, 64)
+        address = _address(text)
+        client = address or text
+        remote = _clean(mapping.remote_host, 64)
+        key = (protocol, external, client, internal, remote)
+        if key not in forwards:
+            forwards[key] = Forward(
+                protocol,
+                external,
+                client,
+                internal,
+                description=_clean(mapping.description, _MAX_PARAM),
+                remote_host=remote,
+                target=address if address in addresses else None,
+            )
+    return tuple(forwards.values())
+
+
+def _forward_hit(forward: Forward) -> Hit:
+    params = {
+        "external_port": str(forward.external_port),
+        "internal_port": str(forward.internal_port),
+        "protocol": forward.protocol,
+        "description": forward.description,
+    }
+    client = f"[{forward.client}]" if ":" in forward.client else forward.client
+    seen = f"{forward.protocol} {forward.external_port} to {client}:{forward.internal_port}"
+    if forward.description:
+        seen += f" ({forward.description})"
+    evidence = _evidence(seen, _labeled("only from", forward.remote_host))
+    return Hit(forward.internal_port, params, evidence)
+
+
+def _port_forward(*, risky: bool) -> Check:
+    """A rule for the router's port forwards, to risky services or to anything else."""
+
+    def check(device: Device, context: Context) -> Iterator[Hit]:
+        here = _address(device.ip)
+        gateway = context.is_gateway(device)
+        for forward in context.forwards:
+            leads_here = gateway if forward.target is None else forward.target == here
+            if leads_here and (forward.internal_port in _RISKY_PORTS) == risky:
+                yield _forward_hit(forward)
+
+    return check
+
+
+def _ipv4(value: object) -> ipaddress.IPv4Address | None:
+    try:
+        address = ipaddress.ip_address(_clean(value, 64))
+    except ValueError:
+        return None
+    if isinstance(address, ipaddress.IPv6Address):
+        return address.ipv4_mapped
+    return address
+
+
+def _external_in(networks: tuple[ipaddress.IPv4Network, ...]) -> Check:
+    """A rule for a router whose internet address is in one of `networks`."""
+
+    def check(device: Device, context: Context) -> Iterator[Hit]:
+        router = context.router
+        if router is None or not context.is_gateway(device):
+            return
+        address = _ipv4(router.external_ip)
+        if address is not None and any(address in network for network in networks):
+            connection = _labeled("connection", router.connection)
+            evidence = _evidence(f"external IP: {address}", connection)
+            yield Hit(None, {"external_ip": str(address)}, evidence)
+
+    return check
+
+
+_ROUTER_RULES: tuple[Rule, ...] = (
+    Rule("port-forward-risky", "high", _port_forward(risky=True), per_port=False),
+    Rule("port-forward", "low", _port_forward(risky=False), per_port=False),
+    Rule("double-nat", "info", _external_in(_PRIVATE)),
+    Rule("cgnat", "info", _external_in(_SHARED)),
+)
+
 RULES: tuple[Rule, ...] = (
     Rule("telnet-open", "high", _exposed(_TELNET)),
     Rule("ftp-open", "medium", _exposed(_FTP, product=True, evidence=_ftp_evidence)),
@@ -406,6 +568,7 @@ RULES: tuple[Rule, ...] = (
     Rule("smb-open", "info", _exposed(_SMB)),
     Rule("ssh-open", "info", _exposed(_SSH, product=True)),
     Rule("unknown-device", "info", _unknown_device),
+    *_ROUTER_RULES,
 )
 RULE_IDS: tuple[str, ...] = tuple(r.id for r in RULES)
 
@@ -438,28 +601,48 @@ def _address_key(ip: str) -> tuple[int, int, str]:
 
 
 def _order(finding: Finding) -> tuple:
+    params = finding.params
     return (
         _SEVERITY_RANK.get(finding.severity, len(SEVERITIES)),
         _address_key(finding.ip),
         finding.port is not None,
         finding.port or 0,
         _RULE_RANK.get(finding.rule, len(RULES)),
+        # Several port forwards can lead to one port.
+        _port(params.get("external_port"), lowest=0) or 0,
+        params.get("protocol", ""),
+        finding.evidence or "",
     )
 
 
-def evaluate(devices: Iterable[Device], *, gateway: str | None = None) -> list[Finding]:
+def evaluate(
+    devices: Iterable[Device],
+    *,
+    gateway: str | None = None,
+    router: RouterInfo | None = None,
+) -> list[Finding]:
     """Run every rule on every device.
 
+    `router` is what the gateway said about itself over UPnP. Findings that
+    belong on the router go to the device marked as the gateway, or to the
+    `gateway` address when no device is; without either they are dropped.
+
     Returns the findings most severe first, then by address and port. A rule
-    reports a device and port once, even if the device is listed twice.
+    reports a device and port once, even if the device is listed twice. The
+    port forward rules report each forward once.
     """
-    context = Context(gateway)
+    devices = list(devices)
+    context = Context(gateway, router, frozenset(device.ip for device in devices))
+    checks = [(device, RULES) for device in devices]
+    if router is not None and gateway and not any(context.is_gateway(d) for d in devices):
+        # The router answered but is not in the list. Its findings still need a place.
+        checks.append((Device(gateway, kind="router", is_gateway=True), _ROUTER_RULES))
     findings: list[Finding] = []
-    seen: set[tuple[str, str, int | None]] = set()
-    for device in devices:
-        for item in RULES:
+    seen: set[tuple] = set()
+    for device, items in checks:
+        for item in items:
             for finding in item.apply(device, context):
-                key = (finding.rule, finding.ip, finding.port)
+                key = (item.id, *item.identity(finding))
                 if key not in seen:
                     seen.add(key)
                     findings.append(finding)

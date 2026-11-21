@@ -47,6 +47,30 @@ CATALOG = {
     "smb-open": {"port"},
     "ssh-open": {"port", "product"},
     "unknown-device": set(),
+    "port-forward-risky": {"external_port", "internal_port", "protocol", "description"},
+    "port-forward": {"external_port", "internal_port", "protocol", "description"},
+    "double-nat": {"external_ip"},
+    "cgnat": {"external_ip"},
+}
+
+# Screen texts of the router view -> their placeholders.
+ROUTER_TEXTS = {
+    "ui.menu.router": set(),
+    "ui.stage.router": set(),
+    "ui.router.title": set(),
+    "ui.router.external_ip": set(),
+    "ui.router.connection": set(),
+    "ui.router.status": set(),
+    "ui.router.uptime": set(),
+    "ui.router.uptime_value": {"days", "hours"},
+    "ui.router.mappings": set(),
+    "ui.router.none": set(),
+    "ui.router.no_upnp": set(),
+    "ui.router.incomplete": set(),
+    "ui.col.external": set(),
+    "ui.col.forwards_to": set(),
+    "ui.col.protocol": set(),
+    "ui.col.description": set(),
 }
 
 
@@ -139,6 +163,23 @@ def test_no_rule_texts_beyond_the_catalog(code):
 
 
 @pytest.mark.parametrize("code", i18n.LANGUAGES)
+def test_router_screen_texts(code):
+    texts = load(code)
+    for key, params in ROUTER_TEXTS.items():
+        assert key in texts, key
+        assert placeholders(texts[key]) == params, key
+
+
+@pytest.mark.parametrize("code", i18n.LANGUAGES)
+def test_router_rule_texts_never_name_the_device(code):
+    texts = load(code)
+    for rule in ("port-forward-risky", "port-forward", "double-nat", "cgnat"):
+        for part in ("title", "why", "fix"):
+            text = texts[f"rule.{rule}.{part}"]
+            assert "{device}" not in text and "{name}" not in text
+
+
+@pytest.mark.parametrize("code", i18n.LANGUAGES)
 def test_kinds_severities_and_bands(code):
     texts = load(code)
     for kind in models.KINDS:
@@ -210,6 +251,21 @@ def test_fills_placeholders():
     assert i18n.t("rule.telnet-open.fix", port=23) == fixed
     reason = turkish["rule.old-tls.why"].replace("{version}", "TLSv1.1")
     assert i18n.t("rule.old-tls.why", version="TLSv1.1", port="443") == reason
+
+
+def test_fills_the_router_texts():
+    forward = {"external_port": "50000", "internal_port": "81", "protocol": "TCP"}
+    for code in i18n.LANGUAGES:
+        i18n.set_language(code)
+        for rule in ("port-forward-risky", "port-forward"):
+            why = i18n.t(f"rule.{rule}.why", **forward)
+            assert "50000" in why and "81 " in why and "{" not in why
+            assert "50000" in i18n.t(f"rule.{rule}.fix", **forward)
+        assert "10.0.0.2" in i18n.t("rule.double-nat.why", external_ip="10.0.0.2")
+        assert "100.64.1.2" in i18n.t("rule.cgnat.why", external_ip="100.64.1.2")
+        assert "{" not in i18n.t("ui.router.uptime_value", days=3, hours=4)
+    i18n.set_language("en")
+    assert i18n.t("ui.router.uptime_value", days=3, hours=4) == "3 d 4 h"
 
 
 def test_unused_params_are_ignored():
