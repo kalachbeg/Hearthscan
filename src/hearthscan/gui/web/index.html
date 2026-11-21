@@ -62,7 +62,7 @@
     </div>
     <section class="card netcard" id="netcard" hidden aria-labelledby="net-title">
       <h2 id="net-title" data-t="gui.start.network"></h2>
-      <dl class="facts-grid" id="netfacts"></dl>
+      <dl class="facts-grid facts-row" id="netfacts"></dl>
     </section>
   </section>
 
@@ -83,83 +83,87 @@
     </div>
   </section>
 
-  <section class="view" id="view-result" hidden aria-labelledby="score-title">
-    <section class="card score" id="score">
-      <div class="score-main">
-        <h1 class="eyebrow" id="score-title" tabindex="-1" data-t="ui.score.title"></h1>
-        <p class="score-line">
-          <span class="number" id="score-number"></span>
-          <span class="out-of">/ 100</span>
-          <span class="band-title" id="band-title"></span>
-        </p>
-        <div class="meter" aria-hidden="true"><span class="meter-fill" id="meter-fill"></span></div>
-        <p class="band-summary" id="band-summary"></p>
-        <p class="urgent" id="urgent" hidden data-t="ui.score.urgent"></p>
-        <p class="warn" id="unprobed" hidden data-t="gui.result.unprobed"></p>
-        <p class="facts" id="facts"></p>
+  <section class="view view-result" id="view-result" hidden aria-labelledby="score-title">
+    <div class="result-side">
+      <section class="card score" id="score">
+        <div class="score-main">
+          <h1 class="eyebrow" id="score-title" tabindex="-1" data-t="ui.score.title"></h1>
+          <p class="score-line">
+            <span class="number" id="score-number"></span>
+            <span class="out-of">/ 100</span>
+            <span class="band-title" id="band-title"></span>
+          </p>
+          <div class="meter" aria-hidden="true"><span class="meter-fill" id="meter-fill"></span></div>
+          <p class="band-summary" id="band-summary"></p>
+          <p class="urgent" id="urgent" hidden data-t="ui.score.urgent"></p>
+          <p class="warn" id="unprobed" hidden data-t="gui.result.unprobed"></p>
+          <p class="facts" id="facts"></p>
+        </div>
+        <ul class="tiles" id="tiles" data-t-label="gui.result.counts"></ul>
+      </section>
+
+      <div class="toolbar">
+        <button type="button" class="btn btn-primary" id="again" data-t="gui.result.again"></button>
+        <button type="button" class="btn btn-secondary" id="save-report" data-t="gui.save.report"></button>
+        <button type="button" class="btn btn-secondary" id="save-json" data-t="gui.save.json"></button>
       </div>
-      <ul class="tiles" id="tiles" data-t-label="gui.result.counts"></ul>
-    </section>
-
-    <div class="toolbar">
-      <button type="button" class="btn btn-primary" id="again" data-t="gui.result.again"></button>
-      <button type="button" class="btn btn-secondary" id="save-report" data-t="gui.save.report"></button>
-      <button type="button" class="btn btn-secondary" id="save-json" data-t="gui.save.json"></button>
-    </div>
-    <div class="save-box">
-      <p class="save-message" id="save-message" role="status"></p>
-      <button type="button" class="btn btn-quiet" id="copy" hidden data-t="gui.save.copy"></button>
-      <div class="copy-box" id="copy-box" hidden>
-        <label for="copy-text" data-t="gui.save.text"></label>
-        <textarea id="copy-text" rows="8" readonly spellcheck="false"></textarea>
-      </div>
-    </div>
-
-    <section class="block" aria-labelledby="findings-title">
-      <h2 id="findings-title" data-t="ui.findings.title"></h2>
-      <p class="ok" id="findings-none" hidden data-t="ui.findings.none"></p>
-      <div class="finding-list" id="finding-list"></div>
-      <div id="fyi" hidden>
-        <h3 data-t="ui.findings.fyi"></h3>
-        <ul class="card list" id="fyi-list"></ul>
-      </div>
-    </section>
-
-    <section class="block" id="router" hidden aria-labelledby="router-title">
-      <h2 id="router-title" data-t="ui.router.title"></h2>
-      <dl class="card facts-grid router-facts" id="router-facts"></dl>
-      <h3 data-t="ui.router.mappings"></h3>
-      <div id="mappings"></div>
-    </section>
-
-    <section class="block" aria-labelledby="devices-title">
-      <div class="block-head">
-        <h2 id="devices-title"><span data-t="ui.devices.title"></span> <span class="count" id="device-count"></span></h2>
-        <div class="search" id="search-box">
-          <label class="sr-only" for="search" data-t="gui.devices.search"></label>
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <circle cx="11" cy="11" r="6.5"/>
-            <path d="m16 16 4 4"/>
-          </svg>
-          <input type="search" id="search" autocomplete="off" spellcheck="false" data-t-placeholder="gui.devices.search_hint">
+      <div class="save-box">
+        <p class="save-message" id="save-message" role="status"></p>
+        <button type="button" class="btn btn-quiet" id="copy" hidden data-t="gui.save.copy"></button>
+        <div class="copy-box" id="copy-box" hidden>
+          <label for="copy-text" data-t="gui.save.text"></label>
+          <textarea id="copy-text" rows="8" readonly spellcheck="false"></textarea>
         </div>
       </div>
-      <p class="hint shown" id="device-shown" aria-live="polite"></p>
-      <div class="card table" id="device-table"></div>
-      <p class="hint" id="no-match" hidden data-t="gui.devices.no_match"></p>
-    </section>
+    </div>
 
-    <section class="block" id="notes" hidden>
-      <details class="notes">
-        <summary id="notes-title"></summary>
-        <ul id="notes-list"></ul>
-      </details>
-    </section>
+    <div class="result-main">
+      <section class="block" aria-labelledby="findings-title">
+        <h2 id="findings-title" data-t="ui.findings.title"></h2>
+        <p class="ok" id="findings-none" hidden data-t="ui.findings.none"></p>
+        <div class="finding-list" id="finding-list"></div>
+        <div id="fyi" hidden>
+          <h3 data-t="ui.findings.fyi"></h3>
+          <ul class="card list" id="fyi-list"></ul>
+        </div>
+      </section>
 
-    <footer class="foot">
-      <p id="foot-made"></p>
-      <p data-t="gui.result.privacy"></p>
-    </footer>
+      <section class="block" id="router" hidden aria-labelledby="router-title">
+        <h2 id="router-title" data-t="ui.router.title"></h2>
+        <dl class="card facts-grid facts-row router-facts" id="router-facts"></dl>
+        <h3 data-t="ui.router.mappings"></h3>
+        <div id="mappings"></div>
+      </section>
+
+      <section class="block" aria-labelledby="devices-title">
+        <div class="block-head">
+          <h2 id="devices-title"><span data-t="ui.devices.title"></span> <span class="count" id="device-count"></span></h2>
+          <div class="search" id="search-box">
+            <label class="sr-only" for="search" data-t="gui.devices.search"></label>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="11" cy="11" r="6.5"/>
+              <path d="m16 16 4 4"/>
+            </svg>
+            <input type="search" id="search" autocomplete="off" spellcheck="false" data-t-placeholder="gui.devices.search_hint">
+          </div>
+        </div>
+        <p class="hint shown" id="device-shown" aria-live="polite"></p>
+        <div class="card table" id="device-table"></div>
+        <p class="hint" id="no-match" hidden data-t="gui.devices.no_match"></p>
+      </section>
+
+      <section class="block" id="notes" hidden>
+        <details class="notes">
+          <summary id="notes-title"></summary>
+          <ul id="notes-list"></ul>
+        </details>
+      </section>
+
+      <footer class="foot">
+        <p id="foot-made"></p>
+        <p data-t="gui.result.privacy"></p>
+      </footer>
+    </div>
   </section>
 </main>
 </body>

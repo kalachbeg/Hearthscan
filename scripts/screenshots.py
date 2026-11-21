@@ -463,8 +463,14 @@ READY = """(() => {
 
 # Where the first finding ends. The picture stops a little below it, on a whole card.
 FIRST_CARD_BOTTOM = """(() => {
+  // The score sits beside the findings in a wide window, so the picture holds both.
   const card = document.querySelector('#finding-list .finding');
-  return card ? card.getBoundingClientRect().bottom + window.scrollY : 0;
+  const score = document.querySelector('#score');
+  const bottom = Math.max(
+    card ? card.getBoundingClientRect().bottom : 0,
+    score ? score.getBoundingClientRect().bottom : 0
+  );
+  return bottom ? bottom + window.scrollY : 0;
 })()"""
 
 
