@@ -14,7 +14,8 @@ from collections import Counter
 from collections.abc import Callable, Sequence
 from pathlib import Path
 
-from rich.console import Console
+from rich import box
+from rich.console import Console, RenderableType
 from rich.progress import (
     BarColumn,
     Progress,
@@ -26,13 +27,15 @@ from rich.progress import (
     TimeElapsedColumn,
 )
 from rich.prompt import Prompt
+from rich.table import Table
 from rich.text import Text
 
-from . import __version__, i18n, render, serialize
+from . import __version__, diff, i18n, render, scoring, serialize
 from .i18n import t
-from .models import SEVERITIES, Device, RouterInfo, ScanResult
+from .models import SEVERITIES, Device, Finding, RouterInfo, ScanResult
 from .netinfo import NetworkInfo, local_network
 from .ports import HOME_PORTS, SERVICE_NAMES, PortResult, PortState, parse_ports, scan
+from .report import format_time, html_report
 from .runner import run
 from .scope import ScopeError, expand
 from .system import IS_WINDOWS
@@ -45,10 +48,15 @@ EXIT_STOPPED = 130
 
 MAX_TIMEOUT = 60.0
 
+# Saved results are a few hundred kilobytes. Anything far beyond that is not one.
+MAX_RESULT_FILE = 64 * 1024 * 1024
+
+HTML_SUFFIXES = (".html", ".htm")
+
 _EXIT_CODES = """exit status:
   0    done
   1    no local network found
-  2    bad arguments, or the result could not be saved
+  2    bad arguments, or a file could not be read or saved
   3    --fail-on found something that serious
   130  stopped with Ctrl+C"""
 
@@ -65,6 +73,16 @@ def _seconds(text: str) -> float:
         raise argparse.ArgumentTypeError(f"not a number: {text!r}") from None
     if not math.isfinite(value) or not 0 < value <= MAX_TIMEOUT:
         raise argparse.ArgumentTypeError(f"must be between 0 and {MAX_TIMEOUT:.0f} seconds")
+    return value
+
+
+def _minutes(text: str) -> float:
+    try:
+        value = float(text)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"not a number: {text!r}") from None
+    if not math.isfinite(value) or not 0.5 <= value <= 24 * 60:
+        raise argparse.ArgumentTypeError("must be between 0.5 and 1440 minutes")
     return value
 
 
@@ -123,6 +141,125 @@ def _writable(path: Path) -> str | None:
     return None
 
 
+def _same_file(a: Path, b: Path) -> bool:
+    try:
+        return os.path.samefile(a, b)
+    except OSError:
+        return False
+
+
+def _where(finding: Finding, result: ScanResult) -> str:
+    where = render.device_label(result.device(finding.ip), finding.ip)
+    if finding.port:
+        where = t("ui.finding.where", device=where, port=finding.port)
+    return where
+
+
+def diff_view(changes: diff.Diff, old: ScanResult, new: ScanResult) -> list[RenderableType]:
+    """What `hearthscan diff` shows: the score, then the findings and devices that came and went."""
+    period = t("diff.period", before=format_time(old.started), after=format_time(new.started))
+    parts: list[RenderableType] = [Text(t("diff.title"), style="bold"), Text(period, style="dim")]
+
+    before, after = changes.score_before, changes.score_after
+    band_style = render.BAND_STYLES[scoring.band(after)]
+    score = Text(t("ui.score.title") + "  ", style="bold")
+    if before == after:
+        score.append(str(after), style=f"bold {band_style}")
+        score.append(f" / 100  ({t('diff.score_same')})", style="dim")
+    else:
+        score.append(f"{before} → ")
+        score.append(str(after), style=f"bold {band_style}")
+        score.append(f"  ({after - before:+d})", style="green" if after > before else "red")
+    parts += [Text(), score, Text()]
+
+    findings = [
+        ("diff.new_findings", changes.new_findings, new),
+        ("diff.fixed_findings", changes.fixed_findings, old),
+    ]
+    devices = [
+        ("diff.new_devices", changes.new_devices),
+        ("diff.gone_devices", changes.gone_devices),
+    ]
+    if not any(found for _, found, _ in findings) and not any(listed for _, listed in devices):
+        parts.append(Text(t("diff.none"), style="green"))
+        return parts
+    for key, found, result in findings:
+        if not found:
+            continue
+        parts.append(Text(t(key, count=len(found)), style="bold"))
+        for finding in found:
+            line = Text.assemble("  ", render.severity_badge(finding.severity), "  ")
+            line.append(t(f"rule.{finding.rule}.title"))
+            line.append(f"  {_where(finding, result)}", style="dim")
+            parts.append(line)
+        parts.append(Text())
+    for key, listed in devices:
+        if not listed:
+            continue
+        parts.append(Text(t(key, count=len(listed)), style="bold"))
+        for device in listed:
+            line = Text("  • " + render.device_label(device, device.ip))
+            if made_by := render.maker(device):
+                line.append(f"  {made_by}", style="dim")
+            parts.append(line)
+        parts.append(Text())
+    return parts
+
+
+_CHANGE_STYLES = {"new": "bold yellow", "back": "green", "gone": "dim", "finding": "bold red"}
+
+
+def _change_line(change) -> Text:
+    label = t(f"watch.change.{change.kind}")
+    line = Text.assemble("  ", (f" {label} ", _CHANGE_STYLES.get(change.kind, "")), "  ")
+    if change.finding is not None:
+        finding = change.finding
+        line.append(t(f"rule.{finding.rule}.title"), style="bold")
+        where = render.device_label(change.device, finding.ip)
+        if finding.port:
+            where = t("ui.finding.where", device=where, port=finding.port)
+        line.append(f"  {where}", style="dim")
+        return line
+    device = change.device
+    if device is not None:
+        line.append(render.device_label(device, device.ip))
+        made = render.maker(device)
+        if made:
+            line.append(f"  {made}", style="dim")
+    elif change.known is not None:
+        line.append(change.known.name or change.known.last_ip or change.known.key)
+    return line
+
+
+def _known_table(records, width: int | None = None) -> Table:
+    wide = width is None or width >= 110
+    table = Table(box=box.SIMPLE_HEAD, header_style="bold", pad_edge=False)
+    table.add_column(t("ui.col.name"), min_width=12, max_width=30)
+    table.add_column(t("known.col.last_ip"), no_wrap=True)
+    if wide:
+        table.add_column(t("ui.col.maker"), min_width=8, max_width=24)
+    table.add_column(t("ui.col.kind"), min_width=12)
+    if wide:
+        table.add_column(t("known.col.first_seen"), no_wrap=True)
+    table.add_column(t("known.col.last_seen"), no_wrap=True)
+    table.add_column(t("known.col.trusted"), justify="center", no_wrap=True)
+    # Devices nobody has vouched for come first: those are the ones to look at.
+    for record in sorted(records, key=lambda r: (r.trusted, r.last_seen)):
+        style = "" if record.trusted else "yellow"
+        row = [
+            Text(record.name or "", style=style),
+            Text(record.last_ip or ""),
+        ]
+        if wide:
+            row.append(Text(record.vendor or ""))
+        row.append(Text(t(f"kind.{record.kind}") if record.kind else ""))
+        if wide:
+            row.append(Text(format_time(record.first_seen)))
+        row += [Text(format_time(record.last_seen)), Text("\u2713" if record.trusted else "")]
+        table.add_row(*row)
+    return table
+
+
 class App:
     def __init__(self, out: Console | None = None, err: Console | None = None) -> None:
         self.out = out or Console(highlight=False)
@@ -160,6 +297,37 @@ class App:
         except KeyboardInterrupt:
             self.err.print(Text(t("ui.stopped"), style="yellow"))
             raise _Abort(EXIT_STOPPED) from None
+
+    def _load(self, path: Path) -> ScanResult:
+        """A result saved with `scan -o` or `scan --json`. Stops with status 2 on anything else."""
+        if path.is_dir():
+            self.error(t("report.error.read", path=str(path), reason="it is a folder"))
+            raise _Abort(EXIT_USAGE)
+        try:
+            with path.open("rb") as file:
+                raw = file.read(MAX_RESULT_FILE + 1)
+        except OSError as exc:
+            self.error(t("report.error.read", path=str(path), reason=exc.strerror or exc))
+            raise _Abort(EXIT_USAGE) from None
+        try:
+            if len(raw) > MAX_RESULT_FILE:
+                raise ValueError("the file is far too large")
+            # Some Windows editors put a byte order mark in front.
+            return serialize.loads(raw.decode("utf-8-sig"))
+        except UnicodeDecodeError:
+            reason = "not UTF-8 text"
+        except ValueError as exc:
+            reason = str(exc)
+        self.error(t("report.error.not_result", path=str(path), reason=reason))
+        raise _Abort(EXIT_USAGE)
+
+    def _save(self, path: Path, text: str) -> bool:
+        try:
+            path.write_text(text, encoding="utf-8")
+        except OSError as exc:
+            self.error(t("ui.save_failed", path=str(path), reason=exc.strerror or exc))
+            return False
+        return True
 
     # Commands
 
@@ -268,13 +436,166 @@ class App:
             if any(SEVERITIES.index(f.severity) <= limit for f in result.findings):
                 code = EXIT_FINDINGS
         if output is not None:
-            try:
-                output.write_text(serialize.dumps(result), encoding="utf-8")
-            except OSError as exc:
-                self.error(t("ui.save_failed", path=str(output), reason=exc.strerror or exc))
+            if output.suffix.lower() in HTML_SUFFIXES:
+                text = html_report(result)
+            else:
+                text = serialize.dumps(result)
+            if not self._save(output, text):
                 return EXIT_USAGE
-            self.err.print(Text(t("ui.saved", path=str(output)), style="dim"))
+            # soft_wrap: a long path stays on one line, so it can be copied.
+            self.err.print(Text(t("ui.saved", path=str(output)), style="dim"), soft_wrap=True)
         return code
+
+    def save_report(self, source: Path, output: Path | None = None) -> int:
+        """Turn a saved result into an HTML report, by default next to it."""
+        result = self._load(source)
+        target = source.with_suffix(".html") if output is None else output
+        problem = _writable(target)
+        if problem is None and _same_file(target, source):
+            problem = "it is the result being read"
+        if problem:
+            self.error(t("ui.save_failed", path=str(target), reason=problem))
+            return EXIT_USAGE
+        if not self._save(target, html_report(result)):
+            return EXIT_USAGE
+        self.out.print(Text(t("report.saved", path=str(target))), soft_wrap=True)
+        return EXIT_OK
+
+    def compare_scans(self, old_path: Path, new_path: Path, *, as_json: bool = False) -> int:
+        """Show what changed between two saved results."""
+        old, new = self._load(old_path), self._load(new_path)
+        if old.network != new.network:
+            self.note("diff", t("diff.other_network", before=old.network, after=new.network))
+        changes = diff.compare(old, new)
+        if as_json:
+            print(json.dumps(diff.to_dict(changes), indent=2))
+            return EXIT_OK
+        for part in diff_view(changes, old, new):
+            self.out.print(part)
+        return EXIT_OK
+
+    def watch_network(self, *, every: float = 300.0, full: bool = False) -> int:
+        from . import store as known_store
+        from . import watch as watcher
+
+        info = self.network()
+        try:
+            known = known_store.KnownDevices.load()
+        except OSError as exc:
+            path = str(known_store.default_path())
+            self.error(t("watch.store_failed", path=path, reason=exc.strerror or exc))
+            return EXIT_USAGE
+        if known.broken is not None:
+            self.note("store", t("watch.store_broken", path=str(known.broken)))
+        learning = len(known) == 0
+        minutes = f"{every / 60:g}"
+        self.out.print(Text(t("watch.start", network=str(info.scan_network()), minutes=minutes)))
+        self.out.print(Text(t("watch.stop_hint"), style="dim"))
+        if learning:
+            self.out.print(Text(t("watch.learning"), style="dim"))
+
+        def show(found: watcher.Round) -> None:
+            nonlocal learning
+            stamp = format_time(found.finished)
+            header = Text.assemble(
+                (stamp, "bold"), "  ", t("watch.round", count=len(found.devices))
+            )
+            self.out.print(header)
+            if learning:
+                learning = False
+                new = sum(1 for change in found.changes if change.kind == "new")
+                self.out.print(Text("  " + t("watch.learned", count=new), style="green"))
+                return
+            if not found.changes:
+                self.out.print(Text("  " + t("watch.quiet"), style="dim"))
+                return
+            for change in found.changes:
+                self.out.print(_change_line(change))
+            if any(change.kind == "new" for change in found.changes):
+                self.out.bell()
+
+        def wait(seconds: float) -> None:
+            seconds = max(seconds, 0)
+            if seconds < 90:
+                text = t("watch.next_seconds", seconds=f"{seconds:.0f}")
+            else:
+                text = t("watch.next", minutes=f"{seconds / 60:.0f}")
+            self.out.print(Text("  " + text, style="dim"))
+
+        try:
+            run(
+                watcher.watch(
+                    info,
+                    known,
+                    every=every,
+                    full=full,
+                    on_round=show,
+                    on_wait=wait,
+                    on_note=self.note,
+                )
+            )
+        except KeyboardInterrupt:
+            self.err.print(Text(t("ui.stopped"), style="yellow"))
+            return EXIT_STOPPED
+        return EXIT_OK
+
+    def known_devices(
+        self,
+        *,
+        trust: str | None = None,
+        untrust: str | None = None,
+        forget: str | None = None,
+        clear: bool = False,
+        as_json: bool = False,
+    ) -> int:
+        from . import store as known_store
+
+        try:
+            known = known_store.KnownDevices.load()
+        except OSError as exc:
+            path = str(known_store.default_path())
+            self.error(t("watch.store_failed", path=path, reason=exc.strerror or exc))
+            return EXIT_USAGE
+        if known.broken is not None:
+            self.note("store", t("watch.store_broken", path=str(known.broken)))
+
+        changes = [(trust, "trust"), (untrust, "untrust"), (forget, "forget")]
+        for what, action in changes:
+            if what is None:
+                continue
+            record = known.find(what)
+            if record is None:
+                self.error(t("known.not_found", what=what))
+                return EXIT_USAGE
+            if action == "trust":
+                known.trust(record.key)
+                message = "known.trusted"
+            elif action == "untrust":
+                known.trust(record.key, trusted=False)
+                message = "known.untrusted"
+            else:
+                known.forget(record.key)
+                message = "known.forgotten"
+            known.save()
+            self.out.print(Text(t(message, what=record.name or record.last_ip or record.key)))
+            return EXIT_OK
+        if clear:
+            known.clear()
+            known.save()
+            self.out.print(Text(t("known.cleared")))
+            return EXIT_OK
+
+        if as_json:
+            data = {"known": [dataclasses.asdict(record) for record in known.records]}
+            print(json.dumps(data, indent=2))
+            return EXIT_OK
+        if not len(known):
+            self.out.print(Text(t("known.none")))
+            return EXIT_OK
+        self.out.print(Text(t("known.title"), style="bold"))
+        self.out.print(_known_table(known.records, width=self.out.width))
+        self.out.print(Text(t("known.path", path=str(known_store.default_path())), style="dim"))
+        return EXIT_OK
 
     def scan_ports(self, targets: str, ports: Sequence[int] | None, timeout: float) -> int:
         def show(result: PortResult) -> None:
@@ -322,6 +643,7 @@ class App:
             "2": ("ui.menu.devices", self.list_devices),
             "3": ("ui.menu.network", self.show_network),
             "4": ("ui.menu.router", self.show_router),
+            "5": ("ui.menu.watch", self.watch_network),
         }
         try:
             info = local_network()
@@ -397,7 +719,13 @@ def build_parser() -> argparse.ArgumentParser:
         help="only list open ports; skips the password checks, so some risks are missed",
     )
     scan_cmd.add_argument("--json", action="store_true", help="print the result as JSON")
-    scan_cmd.add_argument("-o", "--output", type=Path, help="also save the result as JSON")
+    scan_cmd.add_argument(
+        "-o",
+        "--output",
+        type=Path,
+        metavar="FILE",
+        help="also save the result: an HTML report when FILE ends in .html, JSON otherwise",
+    )
     scan_cmd.add_argument(
         "--fail-on",
         choices=SEVERITIES,
@@ -428,6 +756,74 @@ def build_parser() -> argparse.ArgumentParser:
         "the ports it forwards from the internet. Nothing on the router is changed.",
     )
     router_cmd.add_argument("--json", action="store_true", help="print it as JSON")
+
+    report_cmd = commands.add_parser(
+        "report",
+        parents=[common],
+        help="turn a saved result into an HTML report",
+        description="Turn a result saved with `hearthscan scan -o FILE.json` into an HTML "
+        "report. The page opens in any browser and loads nothing from the internet.",
+        epilog=_EXIT_CODES,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    report_cmd.add_argument("result", type=Path, metavar="RESULT", help="a saved JSON result")
+    report_cmd.add_argument(
+        "-o",
+        "--output",
+        type=Path,
+        metavar="FILE",
+        help="where to write the report (default: next to RESULT, ending in .html)",
+    )
+
+    diff_cmd = commands.add_parser(
+        "diff",
+        parents=[common],
+        help="show what changed between two saved results",
+        description="Compare two results saved with `hearthscan scan -o FILE.json` and show "
+        "the devices and findings that came and went, and how the score moved.",
+        epilog=_EXIT_CODES,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    diff_cmd.add_argument("old", type=Path, metavar="OLD", help="the earlier result")
+    diff_cmd.add_argument("new", type=Path, metavar="NEW", help="the later result")
+    diff_cmd.add_argument("--json", action="store_true", help="print the changes as JSON")
+
+    watch_cmd = commands.add_parser(
+        "watch",
+        parents=[common],
+        help="keep an eye on the network and report devices that turn up",
+        description="Look at the network every few minutes and say when a device turns up "
+        "that was never seen before, comes back, or leaves. The devices seen so far are "
+        "remembered in a small file in your user folder (see `hearthscan known`).",
+    )
+    watch_cmd.add_argument(
+        "--every",
+        type=_minutes,
+        default=5.0,
+        metavar="MINUTES",
+        help="minutes between checks, at least 0.5 (default: 5)",
+    )
+    watch_cmd.add_argument(
+        "--full",
+        action="store_true",
+        help="run a full check each time and also report new risks (slower)",
+    )
+
+    known_cmd = commands.add_parser(
+        "known",
+        parents=[common],
+        help="list the devices Hearthscan remembers from watching",
+        description="List the devices watch mode has seen. Mark the ones you recognise as "
+        "trusted, so the rest stand out.",
+    )
+    known_actions = known_cmd.add_mutually_exclusive_group()
+    known_actions.add_argument(
+        "--trust", metavar="DEVICE", help="mark a device as trusted (MAC or address)"
+    )
+    known_actions.add_argument("--untrust", metavar="DEVICE", help="remove the trusted mark")
+    known_actions.add_argument("--forget", metavar="DEVICE", help="forget a device")
+    known_actions.add_argument("--clear", action="store_true", help="forget every device")
+    known_actions.add_argument("--json", action="store_true", help="print the list as JSON")
 
     ports_cmd = commands.add_parser(
         "ports",
@@ -492,6 +888,20 @@ def main(argv: Sequence[str] | None = None, app: App | None = None) -> int:
             return app.show_router(as_json=args.json)
         if args.command == "ports":
             return app.scan_ports(args.targets, args.ports, args.timeout)
+        if args.command == "report":
+            return app.save_report(args.result, args.output)
+        if args.command == "diff":
+            return app.compare_scans(args.old, args.new, as_json=args.json)
+        if args.command == "watch":
+            return app.watch_network(every=args.every * 60, full=args.full)
+        if args.command == "known":
+            return app.known_devices(
+                trust=args.trust,
+                untrust=args.untrust,
+                forget=args.forget,
+                clear=args.clear,
+                as_json=args.json,
+            )
         return app.menu(parser.format_help)
     except _Abort as stop:
         return stop.code

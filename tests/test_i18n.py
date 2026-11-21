@@ -73,6 +73,32 @@ ROUTER_TEXTS = {
     "ui.col.description": set(),
 }
 
+# Texts of the HTML report and of `hearthscan report` and `diff` -> their placeholders.
+REPORT_TEXTS = {
+    "report.title": {"network", "time"},
+    "report.datetime": {"year", "month", "day", "hour", "minute"},
+    "report.started": {"time"},
+    "report.privacy": set(),
+    "report.evidence": set(),
+    "report.col.tags": set(),
+    "report.devices.none": set(),
+    "report.notes": set(),
+    "report.forward.off": set(),
+    "report.saved": {"path"},
+    "report.error.read": {"path", "reason"},
+    "report.error.not_result": {"path", "reason"},
+    "diff.title": set(),
+    "diff.period": {"before", "after"},
+    "diff.score_same": set(),
+    "diff.new_findings": {"count"},
+    "diff.fixed_findings": {"count"},
+    "diff.new_devices": {"count"},
+    "diff.gone_devices": {"count"},
+    "diff.none": set(),
+    "diff.other_network": {"before", "after"},
+}
+SCREEN_PREFIXES = ("ui.", "report.", "diff.", "watch.", "known.")
+
 
 def load(code):
     def no_duplicates(pairs):
@@ -171,6 +197,25 @@ def test_router_screen_texts(code):
 
 
 @pytest.mark.parametrize("code", i18n.LANGUAGES)
+def test_report_and_diff_texts(code):
+    texts = load(code)
+    for key, params in REPORT_TEXTS.items():
+        assert key in texts, key
+        assert placeholders(texts[key]) == params, key
+    extra = {key for key in texts if key.startswith(("report.", "diff."))} - set(REPORT_TEXTS)
+    assert not extra
+
+
+def test_turkish_dates_put_the_day_first():
+    i18n.set_language("tr")
+    filled = i18n.t("report.datetime", year="2026", month="01", day="02", hour="03", minute="04")
+    assert filled == "02.01.2026 03:04"
+    i18n.set_language("en")
+    filled = i18n.t("report.datetime", year="2026", month="01", day="02", hour="03", minute="04")
+    assert filled == "2026-01-02 03:04"
+
+
+@pytest.mark.parametrize("code", i18n.LANGUAGES)
 def test_router_rule_texts_never_name_the_device(code):
     texts = load(code)
     for rule in ("port-forward-risky", "port-forward", "double-nat", "cgnat"):
@@ -194,8 +239,8 @@ def test_kinds_severities_and_bands(code):
 @pytest.mark.parametrize("code", i18n.LANGUAGES)
 def test_sentences_end_and_titles_do_not(code):
     for key, text in load(code).items():
-        if key.startswith("ui."):
-            continue  # screen texts: labels and whole messages mixed
+        if key.startswith(SCREEN_PREFIXES):
+            continue  # screen and report texts: labels and whole messages mixed
         if key.endswith((".why", ".fix", ".summary")):
             assert text.endswith("."), key
         else:

@@ -56,6 +56,16 @@ in your own home.
   and carrier-grade NAT are pointed out too. These checks only ask the router
   for information; they never change anything on it. `hearthscan router` shows
   them on their own.
+- Reports: `hearthscan scan -o report.html` writes a single HTML file with the
+  score, every finding and the device list, readable on a phone and printable,
+  with no scripts and nothing loaded from the internet. `hearthscan report`
+  turns a saved JSON result into one later.
+- `hearthscan diff old.json new.json` shows what changed between two scans:
+  devices that came or went, risks that are new and risks that were fixed.
+- Watch mode: `hearthscan watch` looks at the network every few minutes and
+  tells you when a device turns up that it has never seen before. The devices
+  it knows are kept in a small file in your user folder, and
+  `hearthscan known` lists them.
 
 ### Removed
 
