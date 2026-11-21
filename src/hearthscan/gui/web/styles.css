@@ -116,7 +116,7 @@ code, pre, .port { font-family: var(--mono); }
   border: 0;
 }
 
-.wrap { max-width: 62rem; margin: 0 auto; padding-left: 1.75rem; padding-right: 1.75rem; }
+.wrap { max-width: 74rem;margin: 0 auto; padding-left: 1.75rem; padding-right: 1.75rem; }
 
 /* Header */
 
@@ -295,14 +295,30 @@ code, pre, .port { font-family: var(--mono); }
 
 /* Start */
 
-.view-start { max-width: 40rem; margin: 0 auto; }
-.hero {
-  padding: 3.25rem 2.5rem 2.75rem;
-  text-align: center;
-  box-shadow: var(--shadow-lift);
+/* The start screen is no card: just the question, the answer and the one button, in the middle. */
+.view-start {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 46rem;
+  min-height: calc(100vh - 11rem);
+  margin: 0 auto;
 }
-.hero h1 { margin: 0 0 0.85rem; font-size: 2.1rem; font-weight: 700; letter-spacing: -0.028em; }
-.lead { max-width: 32rem; margin: 0 auto; font-size: 1.05rem; color: var(--muted); }
+.hero {
+  padding: 1rem 0 2.5rem;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  text-align: center;
+}
+.hero h1 {
+  margin: 0 0 1rem;
+  font-size: 2.85rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+}
+.lead { max-width: 34rem; margin: 0 auto; font-size: 1.1rem; color: var(--muted); }
 .safe {
   display: inline-flex;
   align-items: flex-start;
@@ -345,7 +361,7 @@ code, pre, .port { font-family: var(--mono); }
 }
 .ports-only { margin-top: 1.1rem; }
 .ports-only .hint { max-width: 26rem; margin: 0 auto; font-size: 0.8rem; color: var(--faint); }
-.netcard { margin-top: 1rem; padding: 1.1rem 1.4rem 1.2rem; }
+.netcard { padding: 1.1rem 1.4rem 1.2rem; }
 .netcard h2 {
   margin-bottom: 0.6rem;
   font-size: 0.75rem;
@@ -737,7 +753,7 @@ details > summary { cursor: pointer; }
 .table { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
 th, td {
-  padding: 0.7rem 1rem;
+  padding: 0.7rem 0.85rem;
   border-top: 1px solid var(--line);
   text-align: left;
   vertical-align: top;
@@ -833,6 +849,64 @@ tr.off td { color: var(--faint); }
   color: var(--faint);
 }
 .foot p + p { margin-top: 0.3rem; }
+
+/* Wider windows */
+
+/* Facts read across in cells: the label above, the value below. */
+@media (min-width: 40rem) {
+  .facts-row {
+    grid-template-columns: none;
+    grid-template-rows: auto auto;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+  }
+  .facts-row dt, .facts-row dd {
+    padding: 0 1.25rem;
+    border-top: 0;
+    border-left: 1px solid var(--line);
+    text-align: left;
+  }
+  .facts-row dt:first-of-type, .facts-row dt:first-of-type + dd { padding-left: 0; border-left: 0; }
+  .facts-row dt { padding-bottom: 0.2rem; font-size: 0.8rem; }
+  .facts-row dd { font-size: 1rem; font-weight: 600; }
+  .router-facts { padding: 1.1rem 1.4rem; }
+}
+
+/* Why it matters and what to do, side by side. */
+@media (min-width: 48rem) {
+  .explain {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    column-gap: 2.25rem;
+  }
+  .explain dt { margin-top: 0; }
+}
+
+/* The result as a panel: the score and the actions stay at hand on the left,
+   what was found scrolls by on the right. */
+@media (min-width: 64rem) {
+  .view-result {
+    display: grid;
+    grid-template-columns: 20.5rem minmax(0, 1fr);
+    gap: 0 2.75rem;
+    align-items: start;
+  }
+  .result-side { position: sticky; top: 5rem; }
+  .result-side .score { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.75rem; }
+  .result-side .number { font-size: 4.25rem; }
+  .result-side .toolbar { margin-top: 1rem; }
+  .result-side .toolbar .btn-primary { flex: 1 1 100%; }
+  .result-side .toolbar .btn-secondary { flex: 1 1 0; }
+  .result-main > .block:first-child { margin-top: 0.4rem; }
+  .result-main .foot { margin-top: 3rem; }
+}
+
+/* A short window cannot hold the whole left column, so it scrolls with the page. */
+@media (min-width: 64rem) and (max-height: 46rem) {
+  .result-side { position: static; }
+}
 
 /* Narrow windows and phones */
 
