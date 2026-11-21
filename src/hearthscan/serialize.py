@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import ipaddress
 import json
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from dataclasses import fields, is_dataclass
 from typing import Any, TypeVar
 
@@ -37,6 +37,11 @@ def to_dict(result: ScanResult) -> dict[str, Any]:
     data.update(_plain(result))
     data["notes"] = [{"source": source, "message": message} for source, message in result.notes]
     return data
+
+
+def devices_to_list(devices: Iterable[Device]) -> list[dict[str, Any]]:
+    """Devices alone in the same shape as in to_dict, for `hearthscan devices --json`."""
+    return [_plain(device) for device in devices]
 
 
 def from_dict(data: dict[str, Any]) -> ScanResult:

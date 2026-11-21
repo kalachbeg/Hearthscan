@@ -43,6 +43,13 @@ in your own home.
   Turkish. The language follows the system and can be overridden with
   `HEARTHSCAN_LANG`.
 - Results can be saved as JSON and read back.
+- A terminal interface built on rich: a start menu when Hearthscan runs without
+  a command, a score panel, a table of devices and every finding with what to
+  do about it, in English or Turkish (`--lang en` or `--lang tr`).
+- `hearthscan scan` takes `--ports`, `--timeout`, `--no-probe`, `--json` and
+  `--output`, and `--fail-on high` makes it exit with status 3 when something
+  that serious turns up, for use in scripts.
+- `hearthscan devices --json` and `hearthscan net --json`.
 
 ### Removed
 

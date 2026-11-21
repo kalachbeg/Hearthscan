@@ -30,6 +30,7 @@ classifiers = [
 dependencies = [
     "defusedxml>=0.7.1",
     "ifaddr>=0.2.0",
+    "rich>=14",
 ]
 
 [project.urls]
@@ -38,7 +39,7 @@ Issues = "https://github.com/kalachbeg/Hearthscan/issues"
 Changelog = "https://github.com/kalachbeg/Hearthscan/blob/main/CHANGELOG.md"
 
 [project.scripts]
-hearthscan = "hearthscan.__main__:main"
+hearthscan = "hearthscan.cli:main"
 
 [dependency-groups]
 dev = [

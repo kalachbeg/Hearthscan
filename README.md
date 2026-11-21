@@ -4,8 +4,8 @@ Hearthscan looks at the network in your home and tells you, in plain words, what
 on it and what those devices expose.
 
 This is the 2.0 rewrite of the project that used to be called NetShark. It is not
-finished yet: device discovery and the checks work, a proper terminal interface and the
-desktop window come next.
+finished yet: device discovery, the checks and the terminal interface work; router
+checks, reports and the desktop window come next.
 
 Hearthscan only scans private networks (192.168.x.x, 10.x.x.x, 172.16-31.x.x and
 link-local addresses). Public addresses are refused.
@@ -15,11 +15,13 @@ link-local addresses). Public addresses are refused.
 ```sh
 uv sync
 uv run pytest
+uv run hearthscan                 # menu
 uv run hearthscan scan
 uv run hearthscan scan --lang tr
-uv run hearthscan net
+uv run hearthscan scan --json -o scan.json
 uv run hearthscan devices
-uv run hearthscan ports 192.168.1.1
+uv run hearthscan net
+uv run hearthscan ports 192.168.1.1 -p 22,80,443
 ```
 
 ## Contributing

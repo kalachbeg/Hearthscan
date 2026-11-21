@@ -153,6 +153,8 @@ def test_kinds_severities_and_bands(code):
 @pytest.mark.parametrize("code", i18n.LANGUAGES)
 def test_sentences_end_and_titles_do_not(code):
     for key, text in load(code).items():
+        if key.startswith("ui."):
+            continue  # screen texts: labels and whole messages mixed
         if key.endswith((".why", ".fix", ".summary")):
             assert text.endswith("."), key
         else:
