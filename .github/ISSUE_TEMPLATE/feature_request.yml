@@ -1,0 +1,33 @@
+name: Idea or feature request
+description: Suggest a new check, an improvement, or something that would make Hearthscan easier to use.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ideas are welcome. Hearthscan stays focused on home networks and on explaining
+        things to people who are not network experts, so suggestions in that direction
+        have the best chance. Scanning networks you do not own is out of scope.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Who runs into it, and what do they do today?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like Hearthscan to do?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Other ways you have thought about
+  - type: checkboxes
+    id: help
+    attributes:
+      label: Contributing
+      options:
+        - label: I would like to work on this myself (see CONTRIBUTING.md first)

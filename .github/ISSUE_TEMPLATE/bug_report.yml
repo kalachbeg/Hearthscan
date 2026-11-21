@@ -1,0 +1,70 @@
+name: Bug report
+description: Something went wrong, crashed, or gave a result that is clearly wrong.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this.
+
+        **Before you paste anything:** scan output contains addresses, MAC addresses and
+        device names from your home. Remove or replace anything you do not want to be
+        public. `192.168.1.x` and made-up names are fine for us.
+
+        Found a security problem in Hearthscan itself? Please do not open an issue, use
+        [private reporting](https://github.com/kalachbeg/Hearthscan/security/advisories/new) instead.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you run, and what did you see?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: How can we reproduce it?
+      placeholder: |
+        1. Run `hearthscan scan`
+        2. ...
+  - type: input
+    id: version
+    attributes:
+      label: Hearthscan version
+      description: Output of `hearthscan --version`.
+      placeholder: hearthscan 2.0.0
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Windows 11
+        - Windows 10
+        - macOS
+        - Linux
+        - Linux (WSL)
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: how
+    attributes:
+      label: How do you run it?
+      options:
+        - From a clone of the repository
+        - Installed with pip, pipx or uv
+        - Other
+  - type: textarea
+    id: output
+    attributes:
+      label: Output or error message
+      description: Paste the relevant part. It is formatted as code automatically.
+      render: text

@@ -1,0 +1,38 @@
+name: Device shown wrong or not found
+description: A device got the wrong type, name or maker, or did not show up at all.
+labels: ["detection"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Device detection learns from reports like this one. Please share only what you are
+        comfortable making public: the maker and model of the device are the most useful
+        part, its name and address are not needed.
+  - type: input
+    id: device
+    attributes:
+      label: What is the device really?
+      placeholder: Brother HL-L2350DW printer, Samsung Galaxy S23, Xiaomi robot vacuum ...
+    validations:
+      required: true
+  - type: textarea
+    id: shown
+    attributes:
+      label: What did Hearthscan show for it?
+      description: Type, maker and model columns, or "it was missing".
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details from the JSON output (optional)
+      description: |
+        `hearthscan scan --json` includes what each device told us (mDNS services, UPnP
+        description, open ports). Paste the entry for this device with addresses, MACs
+        and names removed or replaced.
+      render: json
+  - type: input
+    id: version
+    attributes:
+      label: Hearthscan version
+      placeholder: hearthscan 2.0.0

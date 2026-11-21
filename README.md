@@ -21,3 +21,19 @@ uv run hearthscan net
 uv run hearthscan devices
 uv run hearthscan ports 192.168.1.1
 ```
+
+## Contributing
+
+Bug reports, ideas and pull requests are welcome. Start with
+[CONTRIBUTING.md](CONTRIBUTING.md). Security problems go through
+[SECURITY.md](SECURITY.md), not the issue tracker.
+
+## Star history
+
+<a href="https://star-history.com/#kalachbeg/hearthscan&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=kalachbeg/hearthscan&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=kalachbeg/hearthscan&type=Date" />
+    <img alt="Star history of Hearthscan" src="https://api.star-history.com/svg?repos=kalachbeg/hearthscan&type=Date" />
+  </picture>
+</a>
