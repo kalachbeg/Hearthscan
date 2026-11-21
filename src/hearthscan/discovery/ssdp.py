@@ -33,6 +33,9 @@ MAX_SERVICES = 64
 MAX_FETCHES = 8
 MAX_LOCATIONS = 4  # descriptions read per host
 FETCH_TIMEOUT = 0.75  # seconds for one description
+# Less time than this left is not worth starting a fetch for. Timers on Windows
+# tick every 15.6 ms, so a wait can end a hair before the deadline.
+MIN_FETCH = 0.05
 
 _MAX_MESSAGE = 16 * 1024
 _MAX_LINES = 64
@@ -369,7 +372,7 @@ async def describe(
     async def read(location: str) -> tuple[UpnpInfo, str | None] | None:
         async with gate:
             left = deadline - loop.time()
-            if left <= 0:
+            if left < MIN_FETCH:
                 return None
             try:
                 response = await http.fetch(
