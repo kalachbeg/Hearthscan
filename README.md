@@ -2,25 +2,30 @@
   <b>English</b> | <a href="README.tr.md">Türkçe</a>
 </p>
 
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/img/logo-dark.svg">
-    <img src="docs/img/logo.svg" alt="Hearthscan" width="440">
-  </picture>
-</p>
+<h1 align="center">Hearthscan</h1>
 
 <p align="center">
   <b>Find out what is on your home network and what it exposes, in plain words.</b>
 </p>
 
 <p align="center">
-  <a href="https://github.com/kalachbeg/Hearthscan/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/kalachbeg/Hearthscan/ci.yml?branch=main&amp;label=CI"></a>
-  <img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-3776ab">
-  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/kalachbeg/Hearthscan"></a>
-  <img alt="Windows, macOS and Linux" src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-2f4f8f">
-  <a href="https://github.com/kalachbeg/Hearthscan/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/kalachbeg/Hearthscan?label=release"></a>
-  <a href="https://github.com/kalachbeg/Hearthscan/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/kalachbeg/Hearthscan"></a>
+  <a href="https://github.com/kalachbeg/Hearthscan/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/kalachbeg/Hearthscan/ci.yml?branch=main&amp;label=CI&amp;style=for-the-badge&amp;labelColor=1f2328"></a>
+  <img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-2f4f8f?style=for-the-badge&amp;labelColor=1f2328">
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/kalachbeg/Hearthscan?style=for-the-badge&amp;labelColor=1f2328&amp;color=2f4f8f"></a>
+  <img alt="Windows, macOS and Linux" src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-2f4f8f?style=for-the-badge&amp;labelColor=1f2328">
+  <a href="https://github.com/kalachbeg/Hearthscan/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/kalachbeg/Hearthscan?label=release&amp;style=for-the-badge&amp;labelColor=1f2328&amp;color=2f4f8f"></a>
+  <a href="https://github.com/kalachbeg/Hearthscan/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/kalachbeg/Hearthscan?style=for-the-badge&amp;labelColor=1f2328&amp;color=2f4f8f"></a>
 </p>
+
+<p align="center">
+  <a href="#quick-start"><kbd>&nbsp;Quick start&nbsp;</kbd></a>&nbsp;
+  <a href="#features"><kbd>&nbsp;Features&nbsp;</kbd></a>&nbsp;
+  <a href="#what-it-checks"><kbd>&nbsp;What it checks&nbsp;</kbd></a>&nbsp;
+  <a href="#usage"><kbd>&nbsp;Usage&nbsp;</kbd></a>&nbsp;
+  <a href="#safety-and-privacy"><kbd>&nbsp;Safety&nbsp;</kbd></a>
+</p>
+
+<br>
 
 Hearthscan looks at the network in your home and tells you what is on it: the router,
 the computers and phones, the TV, the printer, the camera by the door and the smart plug
@@ -36,29 +41,45 @@ English or Turkish, and it needs no admin rights.
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/img/window-dark.png">
-    <img src="docs/img/window-light.png" alt="The Hearthscan window after a check: a network score of 45 out of 100, three high risks, and the first one explained: a camera whose video plays without a password." width="860">
+    <img src="docs/img/window-light.png" alt="The Hearthscan window after a check: a network score of 45 out of 100, three high risks, and the first one explained: a camera whose video plays without a password." width="100%">
   </picture>
 </p>
 
 <p align="center">
-  <img src="docs/img/terminal.svg" alt="The end of hearthscan scan in a terminal: things good to know, the router with two ports opened to the internet, and the eleven devices on the network." width="860">
+  <img src="docs/img/terminal.svg" alt="The end of hearthscan scan in a terminal: things good to know, the router with two ports opened to the internet, and the eleven devices on the network." width="100%">
 </p>
 
 <p align="center">
   <sub>The window after a check, and the end of the same check in a terminal. The network in these pictures is made up.</sub>
 </p>
 
-**Contents:** [Quick start](#quick-start) · [What it does](#what-it-does) ·
-[What it checks](#what-it-checks) · [Usage](#usage) · [How it works](#how-it-works) ·
-[Safety and privacy](#safety-and-privacy) ·
-[From NetShark to Hearthscan](#from-netshark-to-hearthscan) ·
-[Known limitations](#known-limitations) · [Development](#development)
-
 ---
 
 ## Quick start
 
 Paste one line into a terminal. It downloads Hearthscan, checks the download and starts it.
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<b>Windows 10 and 11</b><br>
+Open PowerShell and paste the <a href="#windows">Windows line</a> below.
+<pre>irm …/run.ps1 | iex</pre>
+</td>
+<td width="33%" valign="top">
+<b>macOS</b><br>
+Apple silicon or Intel. Open Terminal and paste the <a href="#macos-and-linux">macOS and Linux line</a> below.
+<pre>curl -fsSL …/run.sh | sh</pre>
+</td>
+<td width="33%" valign="top">
+<b>Linux</b><br>
+A 64-bit PC, or ARM such as a Raspberry Pi. Open a terminal and paste the <a href="#macos-and-linux">same line</a>.
+<pre>curl -fsSL …/run.sh | sh</pre>
+</td>
+</tr>
+</table>
+
+The full lines, ready to copy:
 
 ### Windows
 
@@ -160,15 +181,52 @@ Hearthscan is not on PyPI yet, so these commands take it from GitHub.
 
 ---
 
-## What it does
+## Features
 
-| What it finds | How it tells you |
-|---|---|
-| **Every device on the network**<br>Computers, phones, TVs, printers, cameras and plugs, each with a name, a maker and a guess at what it is. | **Each risk in plain words**<br>What it is, why it matters at home, and what to click or change. |
-| **Services that let too much in**<br>34 checks, from Telnet and old SMB1 to a camera stream with no password. | **A score out of 100**<br>One number for the whole household, with the most serious risks first. |
-| **What your router opens**<br>Its internet address and every port it forwards from the internet, read over UPnP. | **Terminal or window**<br>A tidy view in the terminal, or a small window with one big start button. |
-| **New devices as they turn up**<br>Watch mode looks every few minutes and beeps when it sees a device for the first time. | **Reports you can share**<br>One HTML file that opens on any phone or computer and loads nothing from the internet. |
-| **What changed since last time**<br>Compare two saved checks: devices that came or went, risks that are new or fixed. | **English and Turkish**<br>Every screen and every explanation, in your system's language or the one you pick. |
+<table>
+<tr>
+<td width="33%" valign="top">
+<b>Every device on the network</b><br>
+Computers, phones, TVs, printers, cameras and plugs, each with a name, a maker and a guess at what it is.
+</td>
+<td width="33%" valign="top">
+<b>Each risk in plain words</b><br>
+What it is, why it matters at home, and what to click or change.
+</td>
+<td width="33%" valign="top">
+<b>34 checks</b><br>
+From Telnet and old SMB1 to a camera stream that plays without a password.
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<b>What your router opens</b><br>
+Its internet address and every port it forwards from the internet, read over UPnP.
+</td>
+<td width="33%" valign="top">
+<b>A score out of 100</b><br>
+One number for the whole household, with the most serious risks listed first.
+</td>
+<td width="33%" valign="top">
+<b>Watch mode</b><br>
+Looks every few minutes and beeps when a device turns up that it has never seen.
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<b>Reports you can share</b><br>
+One HTML file that opens on any phone or computer and loads nothing from the internet. <code>diff</code> shows what changed since last time.
+</td>
+<td width="33%" valign="top">
+<b>Terminal or window</b><br>
+A tidy view in the terminal, or a small window with one big start button.
+</td>
+<td width="33%" valign="top">
+<b>English and Turkish</b><br>
+Every screen and every explanation, in your system's language or the one you pick.
+</td>
+</tr>
+</table>
 
 ---
 
@@ -350,6 +408,42 @@ instead, and `--browser` asks for the browser on purpose.
 
 ## How it works
 
+<table>
+<tr>
+<td width="33%" valign="top">
+<b>1. Find the devices</b><br>
+A NetBIOS query to every address makes your computer list each device in its neighbor table, which Hearthscan reads without admin rights. mDNS, SSDP and the router add the names.
+</td>
+<td width="33%" valign="top">
+<b>2. Tell them apart</b><br>
+The maker comes from the MAC address. Clues such as services, open ports and names decide whether it is a phone, a printer or a camera.
+</td>
+<td width="33%" valign="top">
+<b>3. Check the ports</b><br>
+A TCP connect scan of 56 ports that are common at home. Ports that stay silent get a second try, since Wi-Fi loses packets now and then.
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<b>4. Look closer, read only</b><br>
+Light probes name each service and see whether it asks for a password. They never log in or change anything, and printers get no bytes at all.
+</td>
+<td width="33%" valign="top">
+<b>5. Ask the router</b><br>
+Over UPnP, four questions that only read: the internet address, the connection status and type, and the list of port forwards.
+</td>
+<td width="33%" valign="top">
+<b>6. Score it</b><br>
+Critical costs 30 points, high 15, medium 6 and low 2, and repeats count half. 90 and above is Good, below 40 is At risk.
+</td>
+</tr>
+</table>
+
+<details>
+<summary><b>The longer version</b></summary>
+
+<br>
+
 1. **Finding devices, without admin rights.** Hearthscan sends a NetBIOS name query to
    every address in your network. Windows PCs and NAS boxes answer with their names, and
    every query also makes your computer learn the device's hardware (MAC) address, so
@@ -379,6 +473,8 @@ instead, and `--browser` asks for the browser on purpose.
    up to three times its weight, so five cameras with the same hole do not sink the score
    on their own. 90 and above is Good, 70 to 89 Fair, 40 to 69 Needs work, and below 40
    At risk.
+
+</details>
 
 ---
 

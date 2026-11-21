@@ -2,25 +2,30 @@
   <a href="README.md">English</a> | <b>Türkçe</b>
 </p>
 
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/img/logo-dark.svg">
-    <img src="docs/img/logo.svg" alt="Hearthscan" width="440">
-  </picture>
-</p>
+<h1 align="center">Hearthscan</h1>
 
 <p align="center">
   <b>Ev ağınızda neler olduğunu ve nelerin açıkta kaldığını sade bir dille anlatır.</b>
 </p>
 
 <p align="center">
-  <a href="https://github.com/kalachbeg/Hearthscan/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/kalachbeg/Hearthscan/ci.yml?branch=main&amp;label=CI"></a>
-  <img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-3776ab">
-  <a href="LICENSE"><img alt="Lisans: MIT" src="https://img.shields.io/github/license/kalachbeg/Hearthscan"></a>
-  <img alt="Windows, macOS ve Linux" src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-2f4f8f">
-  <a href="https://github.com/kalachbeg/Hearthscan/releases/latest"><img alt="Son sürüm" src="https://img.shields.io/github/v/release/kalachbeg/Hearthscan?label=release"></a>
-  <a href="https://github.com/kalachbeg/Hearthscan/stargazers"><img alt="GitHub yıldızları" src="https://img.shields.io/github/stars/kalachbeg/Hearthscan"></a>
+  <a href="https://github.com/kalachbeg/Hearthscan/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/kalachbeg/Hearthscan/ci.yml?branch=main&amp;label=CI&amp;style=for-the-badge&amp;labelColor=1f2328"></a>
+  <img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-2f4f8f?style=for-the-badge&amp;labelColor=1f2328">
+  <a href="LICENSE"><img alt="Lisans: MIT" src="https://img.shields.io/github/license/kalachbeg/Hearthscan?style=for-the-badge&amp;labelColor=1f2328&amp;color=2f4f8f"></a>
+  <img alt="Windows, macOS ve Linux" src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-2f4f8f?style=for-the-badge&amp;labelColor=1f2328">
+  <a href="https://github.com/kalachbeg/Hearthscan/releases/latest"><img alt="Son sürüm" src="https://img.shields.io/github/v/release/kalachbeg/Hearthscan?label=release&amp;style=for-the-badge&amp;labelColor=1f2328&amp;color=2f4f8f"></a>
+  <a href="https://github.com/kalachbeg/Hearthscan/stargazers"><img alt="GitHub yıldızları" src="https://img.shields.io/github/stars/kalachbeg/Hearthscan?style=for-the-badge&amp;labelColor=1f2328&amp;color=2f4f8f"></a>
 </p>
+
+<p align="center">
+  <a href="#hızlı-başlangıç"><kbd>&nbsp;Hızlı başlangıç&nbsp;</kbd></a>&nbsp;
+  <a href="#özellikler"><kbd>&nbsp;Özellikler&nbsp;</kbd></a>&nbsp;
+  <a href="#neleri-kontrol-eder"><kbd>&nbsp;Neleri kontrol eder&nbsp;</kbd></a>&nbsp;
+  <a href="#kullanım"><kbd>&nbsp;Kullanım&nbsp;</kbd></a>&nbsp;
+  <a href="#güvenlik-ve-gizlilik"><kbd>&nbsp;Güvenlik&nbsp;</kbd></a>
+</p>
+
+<br>
 
 Hearthscan evinizdeki ağa bakar ve üzerinde neler olduğunu söyler: modem, bilgisayarlar,
 telefonlar, televizyon, yazıcı, kapıdaki kamera, bir de çoktan unuttuğunuz akıllı priz.
@@ -36,23 +41,17 @@ Türkçe ya da İngilizce çalışır. Yönetici izni de istemez.
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/img/window-dark-tr.png">
-    <img src="docs/img/window-light-tr.png" alt="Kontrol sonrası Hearthscan penceresi: 100 üzerinden 45 ağ puanı, üç yüksek risk ve ilk riskin açıklaması: görüntüsü şifresiz izlenebilen bir kamera." width="860">
+    <img src="docs/img/window-light-tr.png" alt="Kontrol sonrası Hearthscan penceresi: 100 üzerinden 45 ağ puanı, üç yüksek risk ve ilk riskin açıklaması: görüntüsü şifresiz izlenebilen bir kamera." width="100%">
   </picture>
 </p>
 
 <p align="center">
-  <img src="docs/img/terminal-tr.svg" alt="Terminalde hearthscan scan çıktısının sonu: bilmekte fayda olanlar, internete iki port açmış modem ve ağdaki on bir cihaz." width="860">
+  <img src="docs/img/terminal-tr.svg" alt="Terminalde hearthscan scan çıktısının sonu: bilmekte fayda olanlar, internete iki port açmış modem ve ağdaki on bir cihaz." width="100%">
 </p>
 
 <p align="center">
   <sub>Bir kontrolün ardından pencere ve aynı kontrolün terminaldeki sonu. Resimlerdeki ağ gerçek değildir, örnek olarak hazırlanmıştır.</sub>
 </p>
-
-**İçindekiler:** [Hızlı başlangıç](#hızlı-başlangıç) · [Neler yapar](#neler-yapar) ·
-[Neleri kontrol eder](#neleri-kontrol-eder) · [Kullanım](#kullanım) ·
-[Nasıl çalışır](#nasıl-çalışır) · [Güvenlik ve gizlilik](#güvenlik-ve-gizlilik) ·
-[NetShark'tan Hearthscan'e](#netsharktan-hearthscane) ·
-[Bilinen sınırlamalar](#bilinen-sınırlamalar) · [Geliştirme](#geliştirme)
 
 ---
 
@@ -60,6 +59,28 @@ Türkçe ya da İngilizce çalışır. Yönetici izni de istemez.
 
 Bir terminale tek satır yapıştırmanız yeterli. Bu satır Hearthscan'i indirir, indirileni
 doğrular ve çalıştırır.
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<b>Windows 10 ve 11</b><br>
+PowerShell'i açın ve aşağıdaki <a href="#windows">Windows satırını</a> yapıştırın.
+<pre>irm …/run.ps1 | iex</pre>
+</td>
+<td width="33%" valign="top">
+<b>macOS</b><br>
+Apple çipli ya da Intel. Terminal'i açın ve aşağıdaki <a href="#macos-ve-linux">macOS ve Linux satırını</a> yapıştırın.
+<pre>curl -fsSL …/run.sh | sh</pre>
+</td>
+<td width="33%" valign="top">
+<b>Linux</b><br>
+64 bit bir PC ya da Raspberry Pi gibi bir ARM cihaz. Bir terminal açın ve <a href="#macos-ve-linux">aynı satırı</a> yapıştırın.
+<pre>curl -fsSL …/run.sh | sh</pre>
+</td>
+</tr>
+</table>
+
+Kopyalamaya hazır tam satırlar:
 
 ### Windows
 
@@ -164,15 +185,52 @@ Hearthscan henüz PyPI'da yok; bu komutlar onu GitHub'dan alır.
 
 ---
 
-## Neler yapar
+## Özellikler
 
-| Neleri bulur | Size nasıl anlatır |
-|---|---|
-| **Ağdaki her cihazı**<br>Bilgisayarlar, telefonlar, televizyonlar, yazıcılar, kameralar ve prizler; her birinin adı, markası ve ne olduğuna dair bir tahmin. | **Her riski sade bir dille**<br>Ne olduğunu, evde neden önemli olduğunu ve neyi değiştirmeniz gerektiğini. |
-| **Gereğinden fazla açık servisleri**<br>Telnet'ten eski SMB1'e, şifresiz kamera yayınına kadar 34 kontrol. | **100 üzerinden bir puanla**<br>Bütün ev için tek bir sayı; en ciddi riskler en üstte. |
-| **Modeminizin açtıklarını**<br>Dış IP adresini ve internetten içeri yönlendirdiği her portu, UPnP üzerinden okur. | **Terminalde ya da pencerede**<br>Terminalde derli toplu bir görünüm ya da tek büyük düğmeli küçük bir pencere. |
-| **Yeni gelen cihazları**<br>İzleme modu birkaç dakikada bir bakar, ilk kez gördüğü cihazı bip sesiyle haber verir. | **Paylaşabileceğiniz raporlarla**<br>Her telefonda ve bilgisayarda açılan, internetten hiçbir şey yüklemeyen tek bir HTML dosyası. |
-| **Son kontrolden beri değişenleri**<br>Kaydedilmiş iki kontrolü karşılaştırır: gelen ve giden cihazlar, yeni çıkan ve giderilen riskler. | **Türkçe ve İngilizce**<br>Her ekran ve her açıklama, sisteminizin dilinde ya da sizin seçtiğiniz dilde. |
+<table>
+<tr>
+<td width="33%" valign="top">
+<b>Ağdaki her cihaz</b><br>
+Bilgisayarlar, telefonlar, televizyonlar, yazıcılar, kameralar ve prizler; her biri adı, markası ve ne olduğuna dair bir tahminle.
+</td>
+<td width="33%" valign="top">
+<b>Her risk sade bir dille</b><br>
+Ne olduğu, evde neden önemli olduğu ve neyi değiştirmeniz gerektiği.
+</td>
+<td width="33%" valign="top">
+<b>34 kontrol</b><br>
+Telnet'ten eski SMB1'e, şifresiz izlenebilen kamera yayınına kadar.
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<b>Modeminizin açtıkları</b><br>
+Dış IP adresi ve internetten içeri yönlendirdiği her port, UPnP üzerinden okunur.
+</td>
+<td width="33%" valign="top">
+<b>100 üzerinden bir puan</b><br>
+Bütün ev için tek bir sayı; en ciddi riskler en üstte.
+</td>
+<td width="33%" valign="top">
+<b>İzleme modu</b><br>
+Birkaç dakikada bir bakar, daha önce hiç görmediği bir cihaz gelince bip sesiyle haber verir.
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<b>Paylaşabileceğiniz raporlar</b><br>
+Her telefonda ve bilgisayarda açılan, internetten hiçbir şey yüklemeyen tek bir HTML dosyası. <code>diff</code> son kontrolden beri nelerin değiştiğini gösterir.
+</td>
+<td width="33%" valign="top">
+<b>Terminalde ya da pencerede</b><br>
+Terminalde derli toplu bir görünüm ya da tek büyük düğmeli küçük bir pencere.
+</td>
+<td width="33%" valign="top">
+<b>Türkçe ve İngilizce</b><br>
+Her ekran ve her açıklama, sisteminizin dilinde ya da sizin seçtiğiniz dilde.
+</td>
+</tr>
+</table>
 
 ---
 
@@ -356,11 +414,47 @@ bilerek de isteyebilirsiniz.
 
 ## Nasıl çalışır
 
+<table>
+<tr>
+<td width="33%" valign="top">
+<b>1. Cihazları bulur</b><br>
+Her adrese giden bir NetBIOS sorgusu, bilgisayarınızın her cihazı komşu tablosuna yazmasını sağlar; Hearthscan bu tabloyu yönetici izni olmadan okur. Adları mDNS, SSDP ve modem tamamlar.
+</td>
+<td width="33%" valign="top">
+<b>2. Birbirinden ayırır</b><br>
+Marka MAC adresinden çıkar. Servisler, açık portlar ve adlar gibi ipuçları, cihazın telefon mu, yazıcı mı, kamera mı olduğuna karar verir.
+</td>
+<td width="33%" valign="top">
+<b>3. Portlara bakar</b><br>
+Evlerde sık görülen 56 port için bir TCP bağlantı taraması. Yanıt vermeyen portlara ikinci bir şans tanınır, çünkü Wi-Fi arada bir paket kaybeder.
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<b>4. Yalnızca okuyarak inceler</b><br>
+Hafif yoklamalar her servisin adını öğrenir ve şifre isteyip istemediğine bakar. Asla oturum açmaz, bir şey değiştirmez; yazıcılara tek bayt bile gitmez.
+</td>
+<td width="33%" valign="top">
+<b>5. Modeme sorar</b><br>
+UPnP üzerinden yalnızca okuyan dört soru: dış IP adresi, bağlantı durumu ve türü, port yönlendirme listesi.
+</td>
+<td width="33%" valign="top">
+<b>6. Puanlar</b><br>
+Kritik bir bulgu 30 puan, yüksek 15, orta 6, düşük 2 düşürür; tekrarlar yarım sayılır. 90 ve üstü İyi, 40'ın altı Risk altında demektir.
+</td>
+</tr>
+</table>
+
+<details>
+<summary><b>Daha ayrıntılı anlatım</b></summary>
+
+<br>
+
 1. **Yönetici izni olmadan cihazları bulur.** Hearthscan ağınızdaki her adrese küçük bir
    NetBIOS ad sorgusu gönderir. Windows bilgisayarlar ve NAS cihazları adlarıyla yanıt
    verir; her sorgu ayrıca bilgisayarınızın o cihazın donanım (MAC) adresini öğrenmesini
-   sağlar. Böylece sistemin
-   komşu tablosu (ARP tablosu), güvenlik duvarı olsun olmasın açık olan her cihazı listeler.
+   sağlar. Böylece sistemin komşu tablosu (ARP tablosu), güvenlik duvarı olsun olmasın
+   açık olan her cihazı listeler.
    Hearthscan ham paket göndermek yerine bu tabloyu okur. Aynı anda mDNS (Bonjour) ve SSDP
    (UPnP) duyurularını dinler, modeme de dağıttığı adları sorar.
 2. **Cihazları birbirinden ayırır.** Marka, her MAC adresinin ilk kısmından, Hearthscan ile
@@ -369,8 +463,8 @@ bilerek de isteyebilirsiniz.
    `DESKTOP-...` veya `iPhone` gibi bir ad. En çok ağırlığı toplayan tür kazanır.
 3. **Portları kontrol eder.** Evlerde sık görülen 56 port için bir TCP bağlantı taraması:
    uzaktan erişim, dosya paylaşımı, yazıcılar, kameralar, modem yönetimi, medya cihazları,
-   bir de unutulup açık kalmış veritabanları. Filtreli görünen portlara ikinci bir şans tanınır, çünkü
-   Wi-Fi'de tek bir paketin kaybolması sık olur.
+   bir de unutulup açık kalmış veritabanları. Filtreli görünen portlara ikinci bir şans
+   tanınır, çünkü Wi-Fi'de tek bir paketin kaybolması sık olur.
 4. **Yalnızca okuyarak yakından bakar.** Her açık port için hafif bir yoklama, servisin adını
    öğrenmeye ve şifre isteyip istemediğini görmeye yetecek kadar konuşur: bir SSH karşılaması,
    bir web sayfasının başlığı ve giriş formu, şifresiz bir RTSP isteği, yalnızca SMB1 öneren
@@ -384,6 +478,8 @@ bilerek de isteyebilirsiniz.
    toplamı ağırlığının üç katını geçmez; yani aynı açığı taşıyan beş kamera puanı tek
    başına dibe çekmez. 90 ve üstü İyi, 70 ile 89 arası Fena değil, 40 ile 69 arası
    İyileştirilmeli, 40'ın altı Risk altında demektir.
+
+</details>
 
 ---
 

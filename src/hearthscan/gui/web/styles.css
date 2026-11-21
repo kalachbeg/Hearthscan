@@ -14,7 +14,6 @@
   --on-accent: #ffffff;
   --link: #2f4f8f;
   --focus: #2b6cd4;
-  --flame: #e07a2e;
   --shadow: 0 1px 2px rgba(31, 32, 35, 0.04), 0 6px 20px rgba(31, 32, 35, 0.05);
   --good: #2e7d32;
   --fair: #8a6100;
@@ -48,7 +47,6 @@
     --on-accent: #10172d;
     --link: #a9bdf2;
     --focus: #8fb3ff;
-    --flame: #f29a4a;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
     --good: #81c784;
     --fair: #f2c94c;
@@ -117,14 +115,6 @@ code, pre, .port { font-family: var(--mono); }
   padding-bottom: 0.7rem;
 }
 .brand { display: flex; align-items: center; gap: 0.55rem; }
-.mark { width: 30px; height: 30px; flex: none; }
-.mark-house {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.2;
-  stroke-linejoin: round;
-}
-.mark-flame { fill: var(--flame); }
 .brand-name { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.01em; }
 .version { font-size: 0.85rem; color: var(--muted); }
 .netline {
