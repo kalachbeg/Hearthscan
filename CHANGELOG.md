@@ -32,6 +32,17 @@ in your own home.
 - A first guess at what each device is: router, computer, phone, printer,
   camera, TV, speaker, NAS, console or smart home gadget, with the reasons.
 - `hearthscan devices` lists what is on the network.
+- Light service probes for open ports: banners, web page titles and login
+  pages, and handshakes that show whether Redis, MQTT, VNC, RTSP cameras, ADB,
+  SOCKS, Docker or Elasticsearch let anyone in without a password, and whether
+  SMB still speaks version 1. Nothing is ever logged into, and printers are
+  left alone.
+- 30 checks with a severity each, from an open Telnet port to a camera stream
+  anyone on the network can watch, and a score out of 100 for the household.
+- Every finding explains what it means and what to do about it, in English and
+  Turkish. The language follows the system and can be overridden with
+  `HEARTHSCAN_LANG`.
+- Results can be saved as JSON and read back.
 
 ### Removed
 

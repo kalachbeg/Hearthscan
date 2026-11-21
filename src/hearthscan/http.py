@@ -6,6 +6,7 @@ It only talks to literal local IP addresses: no DNS, no proxies, no redirects.
 from __future__ import annotations
 
 import asyncio
+import codecs
 import contextlib
 import functools
 import ipaddress
@@ -57,12 +58,8 @@ class Response:
     def text(self) -> str:
         """The body as text, in the charset Content-Type names, else UTF-8."""
         match = _CHARSET.search(self.headers.get("content-type", ""))
-        if match:
-            try:
-                return self.body.decode(match.group(1), errors="replace")
-            except (LookupError, ValueError):
-                pass  # unknown or binary-only codec
-        return self.body.decode("utf-8", errors="replace")
+        codec = _document_codec(match.group(1)) if match else None
+        return self.body.decode(codec or "utf-8", errors="replace")
 
 
 @dataclass(slots=True)
@@ -186,6 +183,49 @@ def _prepare(url: str, method: str, headers: dict[str, str] | None, body: bytes 
     )
 
 
+# Python also knows codecs like punycode or the zlib transforms. A device
+# naming one of those as its charset gets UTF-8 instead: some are very slow
+# on crafted input, and none of them is how a web page is written.
+_DOCUMENT_CODECS = frozenset(
+    {
+        "ascii",
+        "big5",
+        "big5hkscs",
+        "cp932",
+        "cp949",
+        "cp950",
+        "euc_jis_2004",
+        "euc_jp",
+        "euc_kr",
+        "gb18030",
+        "gb2312",
+        "gbk",
+        "iso2022_jp",
+        "iso2022_kr",
+        "shift_jis",
+        "utf-8",
+        "utf-8-sig",
+        "utf-16",
+        "utf-16-be",
+        "utf-16-le",
+        "utf-32",
+        "utf-32-be",
+        "utf-32-le",
+    }
+)
+_DOCUMENT_PREFIXES = ("iso8859-", "cp12", "cp8", "koi8-", "mac-")
+
+
+def _document_codec(label: str) -> str | None:
+    try:
+        name = codecs.lookup(label.strip()).name
+    except (LookupError, ValueError):
+        return None
+    if name in _DOCUMENT_CODECS or name.startswith(_DOCUMENT_PREFIXES):
+        return name
+    return None
+
+
 @functools.cache
 def _tls_context() -> ssl.SSLContext:
     # Home devices use self-signed certificates, so there is nothing to check
@@ -198,6 +238,9 @@ def _tls_context() -> ssl.SSLContext:
     # Python warns about TLSv1 as a minimum but not about MINIMUM_SUPPORTED,
     # which leaves the limit to the security level.
     context.minimum_version = ssl.TLSVersion.MINIMUM_SUPPORTED
+    # OpenSSL 3 also refuses servers that predate secure renegotiation (RFC
+    # 5746), which old printers and cameras do. OpenSSL 1.1.1 allowed them.
+    context.options |= getattr(ssl, "OP_LEGACY_SERVER_CONNECT", 0x4)
     with contextlib.suppress(ssl.SSLError):
         # Anonymous suites stay out: a device must still show a certificate.
         context.set_ciphers("ALL:!aNULL:@SECLEVEL=0")

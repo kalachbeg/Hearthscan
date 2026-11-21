@@ -5,6 +5,8 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 
+SEVERITIES = ("critical", "high", "medium", "low", "info")
+
 KINDS = (
     "router",
     "computer",
@@ -87,7 +89,12 @@ def is_unicast_mac(mac: str) -> bool:
 
 def is_random_mac(mac: str | None) -> bool:
     """Locally administered: phones and laptops make one up per network for privacy."""
-    return bool(mac) and bool(int(mac[:2], 16) & 0x02)
+    if not mac:
+        return False
+    try:
+        return bool(int(mac[:2], 16) & 0x02)
+    except ValueError:
+        return False
 
 
 def _short_name(name: str) -> str:
@@ -102,8 +109,14 @@ def _short_name(name: str) -> str:
 class Service:
     port: int
     protocol: str = "tcp"
-    name: str = ""
-    banner: str | None = None
+    name: str = ""  # "ssh", "http", from the port number or what the probe saw
+    banner: str | None = None  # first thing the service said, cleaned up and capped
+    product: str | None = None  # "OpenSSH 9.6", "lighttpd/1.4.59"
+    tls: bool = False
+    tls_version: str | None = None
+    title: str | None = None  # HTML <title> of a web page
+    auth: str | None = None  # "none" when it let us in without credentials, "required", or unknown
+    facts: dict[str, str] = field(default_factory=dict)  # probe specific, see probes.py
 
 
 @dataclass(slots=True)
@@ -185,3 +198,32 @@ class Device:
     @property
     def random_mac(self) -> bool:
         return is_random_mac(self.mac)
+
+
+@dataclass(slots=True)
+class Finding:
+    rule: str  # rules.py id, also the key of its texts: rule.<id>.title and so on
+    severity: str  # one of SEVERITIES
+    ip: str
+    port: int | None = None
+    params: dict[str, str] = field(default_factory=dict)  # filled into the texts
+    evidence: str | None = None  # short and technical, not translated
+
+
+@dataclass(slots=True)
+class ScanResult:
+    version: str  # Hearthscan version that made it
+    started: str  # ISO 8601, UTC
+    finished: str
+    interface: str
+    address: str
+    network: str
+    gateway: str | None
+    devices: list[Device] = field(default_factory=list)
+    findings: list[Finding] = field(default_factory=list)
+    score: int = 100
+    ports: list[int] = field(default_factory=list)  # what was scanned
+    notes: list[tuple[str, str]] = field(default_factory=list)  # (source, message)
+
+    def device(self, ip: str) -> Device | None:
+        return next((d for d in self.devices if d.ip == ip), None)

@@ -524,3 +524,11 @@ def test_text_falls_back_to_utf8(charset):
 
 def test_text_without_content_type():
     assert make_response(b"ok \xfe").text() == "ok \ufffd"
+
+
+def test_servers_from_before_secure_renegotiation_are_accepted():
+    import ssl
+
+    from hearthscan import http
+
+    assert http._tls_context().options & getattr(ssl, "OP_LEGACY_SERVER_CONNECT", 0x4)

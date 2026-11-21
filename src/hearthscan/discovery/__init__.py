@@ -92,6 +92,20 @@ async def _recheck(
         await asyncio.sleep(min(SETTLE_INTERVAL, left))
 
 
+async def recheck(devices: list[Device], info: NetworkInfo) -> list[Device]:
+    """Read the neighbor table once more and return the devices still on it.
+
+    Only devices known from nothing but an unconfirmed table entry are looked
+    at: those whose entry is gone are left out, and those the OS now calls
+    reachable come back confirmed. When the table cannot be read at all,
+    every device is kept.
+    """
+    found = {device.ip: device for device in devices}
+    if any(_unconfirmed_arp_only(device) for device in found.values()):
+        await _recheck(found, info, asyncio.get_running_loop().time(), lambda: None)
+    return [device for device in devices if found.get(device.ip) is device]
+
+
 async def discover(
     info: NetworkInfo,
     *,

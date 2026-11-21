@@ -110,6 +110,60 @@ def _list_devices() -> int:
     return 0
 
 
+def _full_scan(as_json: bool, lang: str | None, probe: bool) -> int:
+    from . import i18n, scoring, serialize
+    from .audit import audit
+
+    info = local_network()
+    if info is None:
+        print("No local network found. Are you connected?", file=sys.stderr)
+        return 1
+    if info.sandbox:
+        print(_SANDBOX_NOTES[info.sandbox], file=sys.stderr)
+    i18n.set_language(lang)
+    t = i18n.t
+
+    def note(source: str, message: str) -> None:
+        print(
+            textwrap.fill(message, 78, initial_indent="note: ", subsequent_indent="      "),
+            file=sys.stderr,
+        )
+
+    stages: list[str] = []
+
+    def progress(stage: str, done: int, total: int) -> None:
+        if not stages or stages[-1] != stage:
+            stages.append(stage)
+            if stage != "done":
+                print(f"{stage} ...", file=sys.stderr)
+
+    try:
+        result = run(audit(info, probe=probe, on_progress=progress, on_note=note))
+    except KeyboardInterrupt:
+        print("\nstopped", file=sys.stderr)
+        return 130
+    if as_json:
+        print(serialize.dumps(result))
+        return 0
+
+    band = scoring.band(result.score)
+    print(
+        f"\n{result.network}: {len(result.devices)} device(s), "
+        f"score {result.score}/100, {t(f'band.{band}.title')}"
+    )
+    print(t(f"band.{band}.summary"))
+    for finding in result.findings:
+        device = result.device(finding.ip)
+        where = f"{finding.ip}:{finding.port}" if finding.port else finding.ip
+        label = f"{device.name} ({where})" if device and device.name else where
+        print(f"\n[{t('severity.' + finding.severity)}] {t(f'rule.{finding.rule}.title')}")
+        print(f"  {label}")
+        for part in ("why", "fix"):
+            text = t(f"rule.{finding.rule}.{part}", **finding.params)
+            print(textwrap.fill(text, 78, initial_indent="  ", subsequent_indent="  "))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     # Names come from the network. On Windows a redirected stdout uses the ANSI
     # code page with strict errors, and one odd name would throw away the scan.
@@ -122,6 +176,12 @@ def main(argv: list[str] | None = None) -> int:
     commands = parser.add_subparsers(dest="command")
     commands.add_parser("net", help="show the local network and gateway")
     commands.add_parser("devices", help="list the devices on your network")
+    scan_cmd = commands.add_parser("scan", help="check the whole network and explain the risks")
+    scan_cmd.add_argument("--json", action="store_true", help="print the result as JSON")
+    scan_cmd.add_argument("--lang", choices=("en", "tr"), help="language of the explanations")
+    scan_cmd.add_argument(
+        "--no-probe", action="store_true", help="only look at which ports are open"
+    )
     ports_cmd = commands.add_parser("ports", help="check TCP ports on hosts in your network")
     ports_cmd.add_argument("targets", help="address, range or CIDR, e.g. 192.168.1.0/24")
     ports_cmd.add_argument("-p", "--ports", help="e.g. 22,80,8000-8100 (default: common ones)")
@@ -133,6 +193,8 @@ def main(argv: list[str] | None = None) -> int:
         return _scan_ports(args.targets, args.ports, args.timeout)
     if args.command == "devices":
         return _list_devices()
+    if args.command == "scan":
+        return _full_scan(args.json, args.lang, not args.no_probe)
     return _show_network()
 
 
