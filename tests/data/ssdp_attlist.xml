@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ATTLIST pad filler CDATA "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+]>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+  <device>
+    <deviceType>urn:schemas-upnp-org:device:Basic:1</deviceType>
+    <friendlyName>Padded</friendlyName>
+    <pad/><pad/><pad/><pad/><pad/><pad/><pad/><pad/>
+  </device>
+</root>

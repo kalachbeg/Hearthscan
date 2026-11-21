@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import ctypes
+import ntpath
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -14,6 +17,31 @@ _CREATIONFLAGS = getattr(subprocess, "CREATE_NO_WINDOW", 0)
 
 # Windows console tools print in the OEM code page (cp437, cp857, ...), not UTF-8.
 _ENCODING = "oem" if IS_WINDOWS else "utf-8"
+
+
+def system32() -> str:
+    """Windows' System32 folder."""
+    if IS_WINDOWS:
+        try:
+            get_directory = ctypes.WinDLL("kernel32").GetSystemDirectoryW
+            get_directory.argtypes = (ctypes.c_wchar_p, ctypes.c_uint)
+            get_directory.restype = ctypes.c_uint
+            buffer = ctypes.create_unicode_buffer(512)
+            length = get_directory(buffer, len(buffer))
+            if 0 < length < len(buffer):
+                return buffer.value
+        except (OSError, AttributeError):
+            pass
+    return ntpath.join(os.environ.get("SYSTEMROOT") or r"C:\Windows", "System32")
+
+
+def windows_tool(name: str) -> str:
+    """Full path of a program that ships with Windows, such as "arp.exe".
+
+    Run by bare name, CreateProcess looks in the current directory before
+    System32, so a planted arp.exe there would run instead.
+    """
+    return ntpath.join(system32(), name)
 
 
 def run(args: list[str], timeout: float = 10.0) -> str:

@@ -23,6 +23,15 @@ in your own home.
   Linux, skipping VPN, VM and container adapters. Running inside WSL 2 or a
   container prints a note, since that network usually isn't the home LAN.
 - Ctrl+C stops a scan cleanly.
+- Device discovery without admin rights: a NetBIOS status sweep fills the OS
+  neighbor table, which is then read on every platform (GetIpNetTable2 on
+  Windows, `ip neigh` or /proc/net/arp on Linux, `arp -an` on macOS). mDNS,
+  SSDP/UPnP and reverse DNS run alongside it for names and models.
+- MAC vendor lookup from the IEEE registries (MA-L, MA-M and MA-S), shipped as
+  a small compressed table. `scripts/build_oui.py` rebuilds it.
+- A first guess at what each device is: router, computer, phone, printer,
+  camera, TV, speaker, NAS, console or smart home gadget, with the reasons.
+- `hearthscan devices` lists what is on the network.
 
 ### Removed
 

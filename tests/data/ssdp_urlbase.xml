@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+  <specVersion><major>1</major><minor>0</minor></specVersion>
+  <URLBase>http://192.168.1.40:8200/</URLBase>
+  <device>
+    <deviceType>urn:schemas-upnp-org:device:MediaServer:1</deviceType>
+    <friendlyName>Storage-Box Media</friendlyName>
+    <manufacturer>Example Storage</manufacturer>
+    <modelName>Media Server</modelName>
+    <modelNumber>1</modelNumber>
+    <UDN>uuid:00000000-0000-0000-0000-00000000d001</UDN>
+    <serviceList>
+      <service>
+        <serviceType>urn:schemas-upnp-org:service:ContentDirectory:1</serviceType>
+        <serviceId>urn:upnp-org:serviceId:ContentDirectory</serviceId>
+        <controlURL>/ctl/ContentDir</controlURL>
+        <eventSubURL>/evt/ContentDir</eventSubURL>
+        <SCPDURL>/ContentDir.xml</SCPDURL>
+      </service>
+      <service>
+        <serviceType>urn:schemas-upnp-org:service:ConnectionManager:1</serviceType>
+        <serviceId>urn:upnp-org:serviceId:ConnectionManager</serviceId>
+        <controlURL>upnp/control/cm</controlURL>
+        <eventSubURL>upnp/event/cm</eventSubURL>
+        <SCPDURL>upnp/cm.xml</SCPDURL>
+      </service>
+    </serviceList>
+  </device>
+</root>

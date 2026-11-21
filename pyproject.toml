@@ -28,6 +28,7 @@ classifiers = [
     "Topic :: System :: Networking :: Monitoring",
 ]
 dependencies = [
+    "defusedxml>=0.7.1",
     "ifaddr>=0.2.0",
 ]
 

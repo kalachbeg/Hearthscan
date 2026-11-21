@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+  <specVersion>
+    <major>1</major>
+    <minor>0</minor>
+  </specVersion>
+  <device>
+    <deviceType>urn:schemas-upnp-org:device:InternetGatewayDevice:1</deviceType>
+    <friendlyName>Acme HomeGate</friendlyName>
+    <manufacturer>Acme Networks</manufacturer>
+    <manufacturerURL>http://www.example.com/</manufacturerURL>
+    <modelDescription>Home router</modelDescription>
+    <modelName>HomeGate 3000</modelName>
+    <modelNumber>HG-3000</modelNumber>
+    <serialNumber>00000001</serialNumber>
+    <UDN>uuid:00000000-0000-0000-0000-00000000a001</UDN>
+    <serviceList>
+      <service>
+        <serviceType>urn:schemas-upnp-org:service:Layer3Forwarding:1</serviceType>
+        <serviceId>urn:upnp-org:serviceId:L3Forwarding1</serviceId>
+        <controlURL>/ctl/L3F</controlURL>
+        <eventSubURL>/evt/L3F</eventSubURL>
+        <SCPDURL>/L3F.xml</SCPDURL>
+      </service>
+    </serviceList>
+    <deviceList>
+      <device>
+        <deviceType>urn:schemas-upnp-org:device:WANDevice:1</deviceType>
+        <friendlyName>WAN Device</friendlyName>
+        <manufacturer>Acme Networks</manufacturer>
+        <modelName>WAN Device</modelName>
+        <UDN>uuid:00000000-0000-0000-0000-00000000a002</UDN>
+        <serviceList>
+          <service>
+            <serviceType>urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1</serviceType>
+            <serviceId>urn:upnp-org:serviceId:WANCommonIFC1</serviceId>
+            <controlURL>/ctl/CmnIfCfg</controlURL>
+            <eventSubURL>/evt/CmnIfCfg</eventSubURL>
+            <SCPDURL>/WANCfg.xml</SCPDURL>
+          </service>
+        </serviceList>
+        <deviceList>
+          <device>
+            <deviceType>urn:schemas-upnp-org:device:WANConnectionDevice:1</deviceType>
+            <friendlyName>WAN Connection Device</friendlyName>
+            <manufacturer>Acme Networks</manufacturer>
+            <modelName>WAN Connection Device</modelName>
+            <UDN>uuid:00000000-0000-0000-0000-00000000a003</UDN>
+            <serviceList>
+              <service>
+                <serviceType>urn:schemas-upnp-org:service:WANIPConnection:1</serviceType>
+                <serviceId>urn:upnp-org:serviceId:WANIPConn1</serviceId>
+                <controlURL>/ctl/IPConn</controlURL>
+                <eventSubURL>/evt/IPConn</eventSubURL>
+                <SCPDURL>/WANIPCn.xml</SCPDURL>
+              </service>
+            </serviceList>
+          </device>
+        </deviceList>
+      </device>
+    </deviceList>
+    <presentationURL>http://192.168.1.1/</presentationURL>
+  </device>
+</root>

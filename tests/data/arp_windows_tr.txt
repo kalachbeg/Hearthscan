@@ -1,0 +1,9 @@
+
+Arabirim: 192.168.1.34 --- 0xb
+  İnternet Adresi       Fiziksel Adres        Tür
+  192.168.1.1           ac-de-48-00-11-01     dinamik   
+  192.168.1.50          02-7c-3e-19-5a-50     dinamik   
+  192.168.1.77          00-00-00-00-00-00     geçersiz  
+  192.168.1.255         ff-ff-ff-ff-ff-ff     statik    
+  224.0.0.251           01-00-5e-00-00-fb     statik    
+  239.255.255.250       01-00-5e-7f-ff-fa     statik    

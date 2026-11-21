@@ -13,7 +13,7 @@ import ifaddr
 
 from . import system
 from .scope import is_local
-from .system import IS_LINUX, IS_MACOS, IS_WINDOWS, run
+from .system import IS_LINUX, IS_MACOS, IS_WINDOWS, run, windows_tool
 
 # A Hyper-V external switch moves the host's LAN address onto a virtual NIC.
 # It is still the home network when it carries the default route.
@@ -223,7 +223,7 @@ def parse_netstat_rn(text: str) -> list[Route]:
 def default_routes() -> list[Route]:
     """Default IPv4 routes, best first."""
     if IS_WINDOWS:
-        return parse_route_print(run(["route", "print", "-4"]))
+        return parse_route_print(run([windows_tool("route.exe"), "print", "-4"]))
     if IS_LINUX:
         try:
             routes = parse_proc_net_route(Path("/proc/net/route").read_text())

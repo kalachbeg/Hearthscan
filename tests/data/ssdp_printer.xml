@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+  <specVersion><major>1</major><minor>0</minor></specVersion>
+  <device>
+    <deviceType>urn:schemas-upnp-org:device:Printer:1</deviceType>
+    <friendlyName>
+      Office    Printer
+      (2nd floor)
+    </friendlyName>
+    <manufacturer>Inkwell Printing Co.</manufacturer>
+    <modelName>Inkwell  LX-200</modelName>
+    <modelNumber>  LX-200  </modelNumber>
+    <UDN>uuid:00000000-0000-0000-0000-00000000c001</UDN>
+    <serviceList>
+      <service>
+        <serviceType>urn:schemas-upnp-org:service:PrintBasic:1</serviceType>
+        <serviceId>urn:upnp-org:serviceId:PrintBasic1</serviceId>
+        <controlURL>/upnp/control/printbasic</controlURL>
+        <eventSubURL>/upnp/event/printbasic</eventSubURL>
+        <SCPDURL>/upnp/printbasic.xml</SCPDURL>
+      </service>
+      <service>
+        <serviceType>urn:schemas-upnp-org:service:PrintBasic:1</serviceType>
+        <serviceId>urn:upnp-org:serviceId:PrintBasic1</serviceId>
+        <controlURL>/upnp/control/printbasic</controlURL>
+        <eventSubURL>/upnp/event/printbasic</eventSubURL>
+        <SCPDURL>/upnp/printbasic.xml</SCPDURL>
+      </service>
+      <service>
+        <serviceType>urn:schemas-upnp-org:service:PrintEnhanced:1</serviceType>
+        <serviceId>urn:upnp-org:serviceId:PrintEnhanced1</serviceId>
+        <SCPDURL>/upnp/printenhanced.xml</SCPDURL>
+      </service>
+    </serviceList>
+    <presentationURL>/</presentationURL>
+  </device>
+</root>

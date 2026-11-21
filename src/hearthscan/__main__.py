@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import math
 import sys
+import textwrap
 from collections import Counter
 
 from . import __version__
@@ -72,11 +73,55 @@ def _scan_ports(targets: str, port_spec: str | None, timeout: float) -> int:
     return 0
 
 
+def _list_devices() -> int:
+    from .discovery import discover
+
+    info = local_network()
+    if info is None:
+        print("No local network found. Are you connected?", file=sys.stderr)
+        return 1
+    if info.sandbox:
+        print(_SANDBOX_NOTES[info.sandbox], file=sys.stderr)
+
+    def note(source: str, message: str) -> None:
+        print(
+            textwrap.fill(message, 78, initial_indent="note: ", subsequent_indent="      "),
+            file=sys.stderr,
+        )
+
+    print(f"looking around {info.scan_network()} ...", file=sys.stderr)
+    try:
+        devices = run(discover(info, on_note=note))
+    except KeyboardInterrupt:
+        print("\nstopped", file=sys.stderr)
+        return 130
+    for d in devices:
+        flags = (
+            ("gateway", d.is_gateway),
+            ("you", d.is_self),
+            ("seen recently", not d.confirmed),
+        )
+        tags = " ".join(tag for tag, on in flags if on)
+        print(
+            f"{d.ip:<15} {d.mac or '-':<17} {(d.vendor or '-')[:18]:<18} "
+            f"{d.kind:<10} {(d.name or '-')[:28]:<28} {(d.model or '')[:24]:<24} {tags}"
+        )
+    print(f"\n{len(devices)} device(s)")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
+    # Names come from the network. On Windows a redirected stdout uses the ANSI
+    # code page with strict errors, and one odd name would throw away the scan.
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            reconfigure(errors="replace")
     parser = argparse.ArgumentParser(prog="hearthscan", description="Home network checkup.")
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     commands = parser.add_subparsers(dest="command")
     commands.add_parser("net", help="show the local network and gateway")
+    commands.add_parser("devices", help="list the devices on your network")
     ports_cmd = commands.add_parser("ports", help="check TCP ports on hosts in your network")
     ports_cmd.add_argument("targets", help="address, range or CIDR, e.g. 192.168.1.0/24")
     ports_cmd.add_argument("-p", "--ports", help="e.g. 22,80,8000-8100 (default: common ones)")
@@ -86,6 +131,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "ports":
         return _scan_ports(args.targets, args.ports, args.timeout)
+    if args.command == "devices":
+        return _list_devices()
     return _show_network()
 
 

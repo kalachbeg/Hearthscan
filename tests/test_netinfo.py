@@ -1,3 +1,4 @@
+import ntpath
 from ipaddress import ip_address, ip_network
 from pathlib import Path
 
@@ -175,6 +176,21 @@ def test_big_networks_are_narrowed_to_a_slash_24():
     big = Interface("eth0", "eth0", ip_address("10.1.2.3"), ip_network("10.0.0.0/8"))
     assert NetworkInfo(big, "10.0.0.1").scan_network() == ip_network("10.1.2.0/24")
     assert NetworkInfo(ETH, "192.168.1.1").scan_network() == ETH.network
+
+
+def test_windows_runs_route_from_system32(monkeypatch):
+    calls = []
+
+    def fake_run(args, timeout=10.0):
+        calls.append(args)
+        return read("route_print_en.txt")
+
+    monkeypatch.setattr(netinfo, "IS_WINDOWS", True)
+    monkeypatch.setattr(netinfo, "run", fake_run)
+    assert netinfo.default_routes()[0] == Route("192.168.0.1", "192.168.0.23", 35)
+    route_exe = system.windows_tool("route.exe")
+    assert calls == [[route_exe, "print", "-4"]]
+    assert ntpath.isabs(route_exe)
 
 
 def test_real_system_lookups_do_not_crash():
