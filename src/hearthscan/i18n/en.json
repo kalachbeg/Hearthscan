@@ -287,5 +287,6 @@
   "gui.devices.search": "Search devices",
   "gui.devices.search_hint": "Name, address, maker or type",
   "gui.devices.no_match": "No device matches your search.",
-  "gui.devices.shown": "Showing {shown} of {total}"
+  "gui.devices.shown": "Showing {shown} of {total}",
+  "gui.browser_only": "This version of Hearthscan opens in your web browser."
 }

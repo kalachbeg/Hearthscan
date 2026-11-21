@@ -17,6 +17,7 @@ TITLE = "Hearthscan"
 SIZE = (1100, 800)
 MIN_SIZE = (760, 560)
 
+_BROWSER_ONLY = "This version of Hearthscan opens in your web browser."
 _WINDOW_MISSING = (
     'The desktop window needs pywebview (pip install "hearthscan[window]"), '
     "so Hearthscan opens in your web browser instead."
@@ -49,7 +50,12 @@ def _in_window(url: str) -> bool:
     try:
         import webview
     except ImportError:
-        print(_text("gui.window_missing", _WINDOW_MISSING), file=sys.stderr, flush=True)
+        # A ready-made download cannot install anything, so it only says what happens.
+        if getattr(sys, "frozen", False):
+            message = _text("gui.browser_only", _BROWSER_ONLY)
+        else:
+            message = _text("gui.window_missing", _WINDOW_MISSING)
+        print(message, file=sys.stderr, flush=True)
         return False
     settings = getattr(webview, "settings", None)
     if isinstance(settings, dict):

@@ -74,6 +74,13 @@ in your own home.
   loads nothing from the internet.
 - The start menu is now: check my network, open the window, watch, devices,
   router, network details.
+- Ready-made one-file programs for Windows, macOS and Linux, built for every
+  release and listed in `SHA256SUMS`.
+- One-line launchers (`launch/run.ps1` and `launch/run.sh`) that download the
+  right program from the latest release, check its SHA-256, run it from a
+  temporary folder and delete it afterwards. Nothing gets installed.
+- A README in English and Turkish, with pictures drawn from a made-up network
+  by `scripts/screenshots.py`.
 
 ### Removed
 

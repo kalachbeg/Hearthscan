@@ -156,3 +156,21 @@ def test_nothing_imports_pywebview_up_front():
     )
     done = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, check=True)
     assert done.stdout.strip() == "False"
+
+
+def test_a_ready_made_download_without_pywebview_does_not_suggest_pip(monkeypatch, capsys):
+    import builtins
+
+    real_import = builtins.__import__
+
+    def no_webview(name, *args, **kwargs):
+        if name == "webview":
+            raise ImportError("no webview")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", no_webview)
+    monkeypatch.setattr(window.sys, "frozen", True, raising=False)
+    assert window._in_window("http://127.0.0.1:1/?token=x") is False
+    err = capsys.readouterr().err
+    assert "pip" not in err
+    assert "browser" in err

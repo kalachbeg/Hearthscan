@@ -287,5 +287,6 @@
   "gui.devices.search": "Cihazlarda ara",
   "gui.devices.search_hint": "Ad, adres, marka veya tür",
   "gui.devices.no_match": "Aramanıza uyan bir cihaz yok.",
-  "gui.devices.shown": "Gösterilen: {shown} / {total}"
+  "gui.devices.shown": "Gösterilen: {shown} / {total}",
+  "gui.browser_only": "Hearthscan'in bu sürümü web tarayıcınızda açılır."
 }
