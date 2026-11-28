@@ -5,6 +5,13 @@
 <h1 align="center">Hearthscan</h1>
 
 <p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/img/window-dark-tr.png">
+    <img src="docs/img/window-light-tr.png" alt="Kontrol sonrası Hearthscan penceresi: 100 üzerinden 45 ağ puanı, üç yüksek risk ve ilk riskin açıklaması: görüntüsü şifresiz izlenebilen bir kamera." width="100%">
+  </picture>
+</p>
+
+<p align="center">
   <b>Ev ağınızda neler olduğunu ve nelerin açıkta kaldığını sade bir dille anlatır.</b>
 </p>
 
@@ -15,13 +22,6 @@
   <img alt="Windows, macOS ve Linux" src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-2f4f8f?style=for-the-badge&amp;labelColor=1f2328">
   <a href="https://github.com/kalachbeg/Hearthscan/releases/latest"><img alt="Son sürüm" src="https://img.shields.io/github/v/release/kalachbeg/Hearthscan?label=release&amp;style=for-the-badge&amp;labelColor=1f2328&amp;color=2f4f8f"></a>
   <a href="https://github.com/kalachbeg/Hearthscan/stargazers"><img alt="GitHub yıldızları" src="https://img.shields.io/github/stars/kalachbeg/Hearthscan?style=for-the-badge&amp;labelColor=1f2328&amp;color=2f4f8f"></a>
-</p>
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/img/window-dark-tr.png">
-    <img src="docs/img/window-light-tr.png" alt="Kontrol sonrası Hearthscan penceresi: 100 üzerinden 45 ağ puanı, üç yüksek risk ve ilk riskin açıklaması: görüntüsü şifresiz izlenebilen bir kamera." width="100%">
-  </picture>
 </p>
 
 <p align="center">

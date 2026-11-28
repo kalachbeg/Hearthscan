@@ -5,6 +5,13 @@
 <h1 align="center">Hearthscan</h1>
 
 <p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/img/window-dark.png">
+    <img src="docs/img/window-light.png" alt="The Hearthscan window after a check: a network score of 45 out of 100, three high risks, and the first one explained: a camera whose video plays without a password." width="100%">
+  </picture>
+</p>
+
+<p align="center">
   <b>Find out what is on your home network and what it exposes, in plain words.</b>
 </p>
 
@@ -15,13 +22,6 @@
   <img alt="Windows, macOS and Linux" src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-2f4f8f?style=for-the-badge&amp;labelColor=1f2328">
   <a href="https://github.com/kalachbeg/Hearthscan/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/kalachbeg/Hearthscan?label=release&amp;style=for-the-badge&amp;labelColor=1f2328&amp;color=2f4f8f"></a>
   <a href="https://github.com/kalachbeg/Hearthscan/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/kalachbeg/Hearthscan?style=for-the-badge&amp;labelColor=1f2328&amp;color=2f4f8f"></a>
-</p>
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/img/window-dark.png">
-    <img src="docs/img/window-light.png" alt="The Hearthscan window after a check: a network score of 45 out of 100, three high risks, and the first one explained: a camera whose video plays without a password." width="100%">
-  </picture>
 </p>
 
 <p align="center">
