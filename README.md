@@ -4,7 +4,9 @@
 
 <h1 align="center">Hearthscan</h1>
 
-
+<p align="center">
+  <img src="docs/img/demo.gif" alt="Hearthscan checking a home network: the start page, the steps of the check, then a score of 45 out of 100 and the risks it found, each with what to do." width="100%">
+</p>
 
 <p align="center">
   <b>Find out what is on your home network and what it exposes, in plain words.</b>
@@ -20,7 +22,10 @@
 </p>
 
 <p align="center">
-  <img src="docs/img/demo.gif" alt="Hearthscan checking a home network: the start page, the steps of the check, then a score of 45 out of 100 and the risks it found, each with what to do." width="100%">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/img/window-dark.png">
+    <img src="docs/img/window-light.png" alt="The Hearthscan window after a check: a network score of 45 out of 100, three high risks, and the first one explained: a camera whose video plays without a password." width="100%">
+  </picture>
 </p>
 
 <p align="center">
