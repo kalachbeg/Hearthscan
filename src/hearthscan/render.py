@@ -89,7 +89,7 @@ def devices_table(
     table.add_column(t("ui.col.name"), min_width=12, max_width=30)
     table.add_column(t("ui.col.kind"), min_width=8)
     if show_maker:
-        table.add_column(t("ui.col.maker"), min_width=10, max_width=28)
+        table.add_column(t("ui.col.maker"), min_width=10, max_width=34)
     if with_ports:
         # Wide enough for a five digit port, so a number never breaks in two.
         table.add_column(t("ui.col.ports"), min_width=5, max_width=24)

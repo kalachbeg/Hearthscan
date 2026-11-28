@@ -1,146 +1,149 @@
-<svg class="rich-terminal" viewBox="0 0 1238 1050.4" xmlns="http://www.w3.org/2000/svg">
+<svg class="rich-terminal" viewBox="0 0 1238 1074.8" xmlns="http://www.w3.org/2000/svg">
     <style>
-    .terminal-3644730188-matrix {
+    .terminal-707299737-matrix {
         font-family: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas,
             "DejaVu Sans Mono", "Liberation Mono", monospace;
         font-size: 20px;
         line-height: 24.4px;
         font-variant-east-asian: full-width;
     }
-    .terminal-3644730188-title {
+    .terminal-707299737-title {
         font-size: 16px;
         font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     }
-    .terminal-3644730188-r1 { fill: #deddd8;font-weight: bold }
-.terminal-3644730188-r2 { fill: #deddd8 }
-.terminal-3644730188-r3 { fill: #8e8e8d }
+    .terminal-707299737-r1 { fill: #deddd8;font-weight: bold }
+.terminal-707299737-r2 { fill: #deddd8 }
+.terminal-707299737-r3 { fill: #8e8e8d }
     </style>
     <defs>
-    <clipPath id="terminal-3644730188-clip-terminal">
-      <rect x="0" y="0" width="1219.0" height="999.4" />
+    <clipPath id="terminal-707299737-clip-terminal">
+      <rect x="0" y="0" width="1219.0" height="1023.8" />
     </clipPath>
-    <clipPath id="terminal-3644730188-line-0">
+    <clipPath id="terminal-707299737-line-0">
     <rect x="0" y="1.5" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-1">
+<clipPath id="terminal-707299737-line-1">
     <rect x="0" y="25.9" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-2">
+<clipPath id="terminal-707299737-line-2">
     <rect x="0" y="50.3" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-3">
+<clipPath id="terminal-707299737-line-3">
     <rect x="0" y="74.7" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-4">
+<clipPath id="terminal-707299737-line-4">
     <rect x="0" y="99.1" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-5">
+<clipPath id="terminal-707299737-line-5">
     <rect x="0" y="123.5" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-6">
+<clipPath id="terminal-707299737-line-6">
     <rect x="0" y="147.9" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-7">
+<clipPath id="terminal-707299737-line-7">
     <rect x="0" y="172.3" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-8">
+<clipPath id="terminal-707299737-line-8">
     <rect x="0" y="196.7" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-9">
+<clipPath id="terminal-707299737-line-9">
     <rect x="0" y="221.1" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-10">
+<clipPath id="terminal-707299737-line-10">
     <rect x="0" y="245.5" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-11">
+<clipPath id="terminal-707299737-line-11">
     <rect x="0" y="269.9" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-12">
+<clipPath id="terminal-707299737-line-12">
     <rect x="0" y="294.3" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-13">
+<clipPath id="terminal-707299737-line-13">
     <rect x="0" y="318.7" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-14">
+<clipPath id="terminal-707299737-line-14">
     <rect x="0" y="343.1" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-15">
+<clipPath id="terminal-707299737-line-15">
     <rect x="0" y="367.5" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-16">
+<clipPath id="terminal-707299737-line-16">
     <rect x="0" y="391.9" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-17">
+<clipPath id="terminal-707299737-line-17">
     <rect x="0" y="416.3" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-18">
+<clipPath id="terminal-707299737-line-18">
     <rect x="0" y="440.7" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-19">
+<clipPath id="terminal-707299737-line-19">
     <rect x="0" y="465.1" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-20">
+<clipPath id="terminal-707299737-line-20">
     <rect x="0" y="489.5" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-21">
+<clipPath id="terminal-707299737-line-21">
     <rect x="0" y="513.9" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-22">
+<clipPath id="terminal-707299737-line-22">
     <rect x="0" y="538.3" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-23">
+<clipPath id="terminal-707299737-line-23">
     <rect x="0" y="562.7" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-24">
+<clipPath id="terminal-707299737-line-24">
     <rect x="0" y="587.1" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-25">
+<clipPath id="terminal-707299737-line-25">
     <rect x="0" y="611.5" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-26">
+<clipPath id="terminal-707299737-line-26">
     <rect x="0" y="635.9" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-27">
+<clipPath id="terminal-707299737-line-27">
     <rect x="0" y="660.3" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-28">
+<clipPath id="terminal-707299737-line-28">
     <rect x="0" y="684.7" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-29">
+<clipPath id="terminal-707299737-line-29">
     <rect x="0" y="709.1" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-30">
+<clipPath id="terminal-707299737-line-30">
     <rect x="0" y="733.5" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-31">
+<clipPath id="terminal-707299737-line-31">
     <rect x="0" y="757.9" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-32">
+<clipPath id="terminal-707299737-line-32">
     <rect x="0" y="782.3" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-33">
+<clipPath id="terminal-707299737-line-33">
     <rect x="0" y="806.7" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-34">
+<clipPath id="terminal-707299737-line-34">
     <rect x="0" y="831.1" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-35">
+<clipPath id="terminal-707299737-line-35">
     <rect x="0" y="855.5" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-36">
+<clipPath id="terminal-707299737-line-36">
     <rect x="0" y="879.9" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-37">
+<clipPath id="terminal-707299737-line-37">
     <rect x="0" y="904.3" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-38">
+<clipPath id="terminal-707299737-line-38">
     <rect x="0" y="928.7" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3644730188-line-39">
+<clipPath id="terminal-707299737-line-39">
     <rect x="0" y="953.1" width="1220" height="24.65"/>
             </clipPath>
+<clipPath id="terminal-707299737-line-40">
+    <rect x="0" y="977.5" width="1220" height="24.65"/>
+            </clipPath>
     </defs>
-    <rect fill="#17191d" stroke="rgba(255,255,255,0.35)" stroke-width="1" x="1" y="1" width="1236" height="1048.4" rx="8"/><text class="terminal-3644730188-title" fill="#deddd8" text-anchor="middle" x="618" y="27">hearthscan&#160;scan&#160;--lang&#160;tr</text>
+    <rect fill="#17191d" stroke="rgba(255,255,255,0.35)" stroke-width="1" x="1" y="1" width="1236" height="1072.8" rx="8"/><text class="terminal-707299737-title" fill="#deddd8" text-anchor="middle" x="618" y="27">hearthscan&#160;scan&#160;--lang&#160;tr</text>
             <g transform="translate(26,22)">
             <circle cx="0" cy="0" r="7" fill="#ff5f57"/>
             <circle cx="22" cy="0" r="7" fill="#febc2e"/>
@@ -148,50 +151,51 @@
             </g>
         
     <g transform="translate(9, 41)"
-       clip-path="url(#terminal-3644730188-clip-terminal)">
+       clip-path="url(#terminal-707299737-clip-terminal)">
     
-    <g class="terminal-3644730188-matrix">
-    <text class="terminal-3644730188-r1" x="0" y="20" textLength="219.6" clip-path="url(#terminal-3644730188-line-0)">Bilmekte&#160;fayda&#160;var</text><text class="terminal-3644730188-r2" x="1220" y="20" textLength="12.2" clip-path="url(#terminal-3644730188-line-0)">
-</text><text class="terminal-3644730188-r2" x="0" y="44.4" textLength="366" clip-path="url(#terminal-3644730188-line-1)">&#160;&#160;•&#160;Dosya&#160;paylaşımı&#160;(SMB)&#160;açık</text><text class="terminal-3644730188-r3" x="366" y="44.4" textLength="451.4" clip-path="url(#terminal-3644730188-line-1)">&#160;&#160;FAMILY-PC&#160;(192.168.1.10),&#160;port:&#160;445</text><text class="terminal-3644730188-r2" x="1220" y="44.4" textLength="12.2" clip-path="url(#terminal-3644730188-line-1)">
-</text><text class="terminal-3644730188-r2" x="0" y="68.8" textLength="366" clip-path="url(#terminal-3644730188-line-2)">&#160;&#160;•&#160;Dosya&#160;paylaşımı&#160;(SMB)&#160;açık</text><text class="terminal-3644730188-r3" x="366" y="68.8" textLength="463.6" clip-path="url(#terminal-3644730188-line-2)">&#160;&#160;backup-nas&#160;(192.168.1.30),&#160;port:&#160;445</text><text class="terminal-3644730188-r2" x="1220" y="68.8" textLength="12.2" clip-path="url(#terminal-3644730188-line-2)">
-</text><text class="terminal-3644730188-r2" x="0" y="93.2" textLength="329.4" clip-path="url(#terminal-3644730188-line-3)">&#160;&#160;•&#160;SSH&#160;uzaktan&#160;girişi&#160;açık</text><text class="terminal-3644730188-r3" x="329.4" y="93.2" textLength="463.6" clip-path="url(#terminal-3644730188-line-3)">&#160;&#160;raspberrypi&#160;(192.168.1.40),&#160;port:&#160;22</text><text class="terminal-3644730188-r2" x="1220" y="93.2" textLength="12.2" clip-path="url(#terminal-3644730188-line-3)">
-</text><text class="terminal-3644730188-r2" x="1220" y="117.6" textLength="12.2" clip-path="url(#terminal-3644730188-line-4)">
-</text><text class="terminal-3644730188-r1" x="0" y="142" textLength="109.8" clip-path="url(#terminal-3644730188-line-5)">Modeminiz</text><text class="terminal-3644730188-r2" x="1220" y="142" textLength="12.2" clip-path="url(#terminal-3644730188-line-5)">
-</text><text class="terminal-3644730188-r2" x="1220" y="166.4" textLength="12.2" clip-path="url(#terminal-3644730188-line-6)">
-</text><text class="terminal-3644730188-r3" x="0" y="190.8" textLength="170.8" clip-path="url(#terminal-3644730188-line-7)">Dış&#160;IP&#160;adresi&#160;</text><text class="terminal-3644730188-r2" x="207.4" y="190.8" textLength="158.6" clip-path="url(#terminal-3644730188-line-7)">203.0.113.57&#160;</text><text class="terminal-3644730188-r2" x="1220" y="190.8" textLength="12.2" clip-path="url(#terminal-3644730188-line-7)">
-</text><text class="terminal-3644730188-r3" x="0" y="215.2" textLength="170.8" clip-path="url(#terminal-3644730188-line-8)">Bağlantı&#160;türü&#160;</text><text class="terminal-3644730188-r2" x="207.4" y="215.2" textLength="158.6" clip-path="url(#terminal-3644730188-line-8)">IP_Routed&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="1220" y="215.2" textLength="12.2" clip-path="url(#terminal-3644730188-line-8)">
-</text><text class="terminal-3644730188-r3" x="0" y="239.6" textLength="170.8" clip-path="url(#terminal-3644730188-line-9)">Durum&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="207.4" y="239.6" textLength="158.6" clip-path="url(#terminal-3644730188-line-9)">Connected&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="1220" y="239.6" textLength="12.2" clip-path="url(#terminal-3644730188-line-9)">
-</text><text class="terminal-3644730188-r3" x="0" y="264" textLength="170.8" clip-path="url(#terminal-3644730188-line-10)">Çalışma&#160;süresi</text><text class="terminal-3644730188-r2" x="207.4" y="264" textLength="158.6" clip-path="url(#terminal-3644730188-line-10)">12&#160;gün&#160;5&#160;saat</text><text class="terminal-3644730188-r2" x="1220" y="264" textLength="12.2" clip-path="url(#terminal-3644730188-line-10)">
-</text><text class="terminal-3644730188-r2" x="1220" y="288.4" textLength="12.2" clip-path="url(#terminal-3644730188-line-11)">
-</text><text class="terminal-3644730188-r1" x="0" y="312.8" textLength="292.8" clip-path="url(#terminal-3644730188-line-12)">İnternete&#160;açılan&#160;portlar</text><text class="terminal-3644730188-r2" x="1220" y="312.8" textLength="12.2" clip-path="url(#terminal-3644730188-line-12)">
-</text><text class="terminal-3644730188-r2" x="1220" y="337.2" textLength="12.2" clip-path="url(#terminal-3644730188-line-13)">
-</text><text class="terminal-3644730188-r1" x="12.2" y="361.6" textLength="170.8" clip-path="url(#terminal-3644730188-line-14)">İnternet&#160;portu</text><text class="terminal-3644730188-r1" x="219.6" y="361.6" textLength="97.6" clip-path="url(#terminal-3644730188-line-14)">Protokol</text><text class="terminal-3644730188-r1" x="353.8" y="361.6" textLength="463.6" clip-path="url(#terminal-3644730188-line-14)">Hedef&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r1" x="854" y="361.6" textLength="207.4" clip-path="url(#terminal-3644730188-line-14)">Açıklama&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="1220" y="361.6" textLength="12.2" clip-path="url(#terminal-3644730188-line-14)">
-</text><text class="terminal-3644730188-r2" x="0" y="386" textLength="1073.6" clip-path="url(#terminal-3644730188-line-15)">&#160;──────────────────────────────────────────────────────────────────────────────────────&#160;</text><text class="terminal-3644730188-r2" x="1220" y="386" textLength="12.2" clip-path="url(#terminal-3644730188-line-15)">
-</text><text class="terminal-3644730188-r2" x="12.2" y="410.4" textLength="170.8" clip-path="url(#terminal-3644730188-line-16)">8554&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="219.6" y="410.4" textLength="97.6" clip-path="url(#terminal-3644730188-line-16)">TCP&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="353.8" y="410.4" textLength="463.6" clip-path="url(#terminal-3644730188-line-16)">garden-cam&#160;(192.168.1.25),&#160;port:&#160;554&#160;&#160;</text><text class="terminal-3644730188-r2" x="854" y="410.4" textLength="207.4" clip-path="url(#terminal-3644730188-line-16)">IPCAM&#160;RTSP&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="1220" y="410.4" textLength="12.2" clip-path="url(#terminal-3644730188-line-16)">
-</text><text class="terminal-3644730188-r2" x="12.2" y="434.8" textLength="170.8" clip-path="url(#terminal-3644730188-line-17)">32400&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="219.6" y="434.8" textLength="97.6" clip-path="url(#terminal-3644730188-line-17)">TCP&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="353.8" y="434.8" textLength="463.6" clip-path="url(#terminal-3644730188-line-17)">backup-nas&#160;(192.168.1.30),&#160;port:&#160;32400</text><text class="terminal-3644730188-r2" x="854" y="434.8" textLength="207.4" clip-path="url(#terminal-3644730188-line-17)">Plex&#160;Media&#160;Server</text><text class="terminal-3644730188-r2" x="1220" y="434.8" textLength="12.2" clip-path="url(#terminal-3644730188-line-17)">
-</text><text class="terminal-3644730188-r2" x="1220" y="459.2" textLength="12.2" clip-path="url(#terminal-3644730188-line-18)">
-</text><text class="terminal-3644730188-r2" x="1220" y="483.6" textLength="12.2" clip-path="url(#terminal-3644730188-line-19)">
-</text><text class="terminal-3644730188-r1" x="0" y="508" textLength="231.8" clip-path="url(#terminal-3644730188-line-20)">Ağınızdaki&#160;cihazlar</text><text class="terminal-3644730188-r2" x="1220" y="508" textLength="12.2" clip-path="url(#terminal-3644730188-line-20)">
-</text><text class="terminal-3644730188-r2" x="1220" y="532.4" textLength="12.2" clip-path="url(#terminal-3644730188-line-21)">
-</text><text class="terminal-3644730188-r1" x="12.2" y="556.8" textLength="146.4" clip-path="url(#terminal-3644730188-line-22)">Adres&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r1" x="195.2" y="556.8" textLength="207.4" clip-path="url(#terminal-3644730188-line-22)">Ad&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r1" x="439.2" y="556.8" textLength="195.2" clip-path="url(#terminal-3644730188-line-22)">Tür&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r1" x="671" y="556.8" textLength="244" clip-path="url(#terminal-3644730188-line-22)">Marka&#160;ve&#160;model&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r1" x="951.6" y="556.8" textLength="256.2" clip-path="url(#terminal-3644730188-line-22)">Açık&#160;portlar&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="1220" y="556.8" textLength="12.2" clip-path="url(#terminal-3644730188-line-22)">
-</text><text class="terminal-3644730188-r2" x="0" y="581.2" textLength="1220" clip-path="url(#terminal-3644730188-line-23)">&#160;──────────────────────────────────────────────────────────────────────────────────────────────────&#160;</text><text class="terminal-3644730188-r2" x="1220" y="581.2" textLength="12.2" clip-path="url(#terminal-3644730188-line-23)">
-</text><text class="terminal-3644730188-r2" x="12.2" y="605.6" textLength="146.4" clip-path="url(#terminal-3644730188-line-24)">192.168.1.1&#160;</text><text class="terminal-3644730188-r2" x="195.2" y="605.6" textLength="207.4" clip-path="url(#terminal-3644730188-line-24)">fritz.box&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="439.2" y="605.6" textLength="195.2" clip-path="url(#terminal-3644730188-line-24)">Modem/Router&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="671" y="605.6" textLength="244" clip-path="url(#terminal-3644730188-line-24)">AVM&#160;FRITZ!Box&#160;7590&#160;&#160;</text><text class="terminal-3644730188-r2" x="951.6" y="605.6" textLength="256.2" clip-path="url(#terminal-3644730188-line-24)">53&#160;80&#160;443&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="1220" y="605.6" textLength="12.2" clip-path="url(#terminal-3644730188-line-24)">
-</text><text class="terminal-3644730188-r3" x="195.2" y="630" textLength="61" clip-path="url(#terminal-3644730188-line-25)">modem</text><text class="terminal-3644730188-r2" x="1220" y="630" textLength="12.2" clip-path="url(#terminal-3644730188-line-25)">
-</text><text class="terminal-3644730188-r2" x="12.2" y="654.4" textLength="146.4" clip-path="url(#terminal-3644730188-line-26)">192.168.1.10</text><text class="terminal-3644730188-r2" x="195.2" y="654.4" textLength="207.4" clip-path="url(#terminal-3644730188-line-26)">FAMILY-PC&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="439.2" y="654.4" textLength="195.2" clip-path="url(#terminal-3644730188-line-26)">Bilgisayar&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="951.6" y="654.4" textLength="256.2" clip-path="url(#terminal-3644730188-line-26)">135&#160;139&#160;445&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="1220" y="654.4" textLength="12.2" clip-path="url(#terminal-3644730188-line-26)">
-</text><text class="terminal-3644730188-r3" x="195.2" y="678.8" textLength="158.6" clip-path="url(#terminal-3644730188-line-27)">bu&#160;bilgisayar</text><text class="terminal-3644730188-r2" x="1220" y="678.8" textLength="12.2" clip-path="url(#terminal-3644730188-line-27)">
-</text><text class="terminal-3644730188-r2" x="12.2" y="703.2" textLength="146.4" clip-path="url(#terminal-3644730188-line-28)">192.168.1.11</text><text class="terminal-3644730188-r2" x="195.2" y="703.2" textLength="207.4" clip-path="url(#terminal-3644730188-line-28)">MacBook-Air&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="439.2" y="703.2" textLength="195.2" clip-path="url(#terminal-3644730188-line-28)">Bilgisayar&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="671" y="703.2" textLength="244" clip-path="url(#terminal-3644730188-line-28)">Apple&#160;MacBook&#160;Air&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="951.6" y="703.2" textLength="256.2" clip-path="url(#terminal-3644730188-line-28)">7000&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="1220" y="703.2" textLength="12.2" clip-path="url(#terminal-3644730188-line-28)">
-</text><text class="terminal-3644730188-r2" x="12.2" y="727.6" textLength="146.4" clip-path="url(#terminal-3644730188-line-29)">192.168.1.12</text><text class="terminal-3644730188-r2" x="195.2" y="727.6" textLength="207.4" clip-path="url(#terminal-3644730188-line-29)">iPhone&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="439.2" y="727.6" textLength="195.2" clip-path="url(#terminal-3644730188-line-29)">Telefon&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="951.6" y="727.6" textLength="256.2" clip-path="url(#terminal-3644730188-line-29)">62078&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="1220" y="727.6" textLength="12.2" clip-path="url(#terminal-3644730188-line-29)">
-</text><text class="terminal-3644730188-r2" x="12.2" y="752" textLength="146.4" clip-path="url(#terminal-3644730188-line-30)">192.168.1.13</text><text class="terminal-3644730188-r2" x="195.2" y="752" textLength="207.4" clip-path="url(#terminal-3644730188-line-30)">Galaxy-S23&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="439.2" y="752" textLength="195.2" clip-path="url(#terminal-3644730188-line-30)">Telefon&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="1220" y="752" textLength="12.2" clip-path="url(#terminal-3644730188-line-30)">
-</text><text class="terminal-3644730188-r3" x="195.2" y="776.4" textLength="158.6" clip-path="url(#terminal-3644730188-line-31)">yanıt&#160;vermedi</text><text class="terminal-3644730188-r2" x="1220" y="776.4" textLength="12.2" clip-path="url(#terminal-3644730188-line-31)">
-</text><text class="terminal-3644730188-r2" x="12.2" y="800.8" textLength="146.4" clip-path="url(#terminal-3644730188-line-32)">192.168.1.20</text><text class="terminal-3644730188-r2" x="195.2" y="800.8" textLength="207.4" clip-path="url(#terminal-3644730188-line-32)">[TV]&#160;Living&#160;Room&#160;</text><text class="terminal-3644730188-r2" x="439.2" y="800.8" textLength="195.2" clip-path="url(#terminal-3644730188-line-32)">Televizyon&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="671" y="800.8" textLength="244" clip-path="url(#terminal-3644730188-line-32)">Samsung&#160;QE55Q60B&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="951.6" y="800.8" textLength="256.2" clip-path="url(#terminal-3644730188-line-32)">7000&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="1220" y="800.8" textLength="12.2" clip-path="url(#terminal-3644730188-line-32)">
-</text><text class="terminal-3644730188-r2" x="12.2" y="825.2" textLength="146.4" clip-path="url(#terminal-3644730188-line-33)">192.168.1.21</text><text class="terminal-3644730188-r2" x="195.2" y="825.2" textLength="207.4" clip-path="url(#terminal-3644730188-line-33)">Office-Printer&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="439.2" y="825.2" textLength="195.2" clip-path="url(#terminal-3644730188-line-33)">Yazıcı&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="671" y="825.2" textLength="244" clip-path="url(#terminal-3644730188-line-33)">Brother&#160;HL-L2350DW&#160;&#160;</text><text class="terminal-3644730188-r2" x="951.6" y="825.2" textLength="256.2" clip-path="url(#terminal-3644730188-line-33)">80&#160;443&#160;631&#160;9100&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="1220" y="825.2" textLength="12.2" clip-path="url(#terminal-3644730188-line-33)">
-</text><text class="terminal-3644730188-r2" x="671" y="849.6" textLength="244" clip-path="url(#terminal-3644730188-line-34)">series&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="1220" y="849.6" textLength="12.2" clip-path="url(#terminal-3644730188-line-34)">
-</text><text class="terminal-3644730188-r2" x="12.2" y="874" textLength="146.4" clip-path="url(#terminal-3644730188-line-35)">192.168.1.25</text><text class="terminal-3644730188-r2" x="195.2" y="874" textLength="207.4" clip-path="url(#terminal-3644730188-line-35)">garden-cam&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="439.2" y="874" textLength="195.2" clip-path="url(#terminal-3644730188-line-35)">Kamera&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="951.6" y="874" textLength="256.2" clip-path="url(#terminal-3644730188-line-35)">554&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="1220" y="874" textLength="12.2" clip-path="url(#terminal-3644730188-line-35)">
-</text><text class="terminal-3644730188-r2" x="12.2" y="898.4" textLength="146.4" clip-path="url(#terminal-3644730188-line-36)">192.168.1.30</text><text class="terminal-3644730188-r2" x="195.2" y="898.4" textLength="207.4" clip-path="url(#terminal-3644730188-line-36)">backup-nas&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="439.2" y="898.4" textLength="195.2" clip-path="url(#terminal-3644730188-line-36)">NAS&#160;(ağ&#160;diski)&#160;&#160;</text><text class="terminal-3644730188-r2" x="671" y="898.4" textLength="244" clip-path="url(#terminal-3644730188-line-36)">NAS-2&#160;Bay&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="951.6" y="898.4" textLength="256.2" clip-path="url(#terminal-3644730188-line-36)">139&#160;445&#160;5000&#160;5001&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="1220" y="898.4" textLength="12.2" clip-path="url(#terminal-3644730188-line-36)">
-</text><text class="terminal-3644730188-r2" x="951.6" y="922.8" textLength="256.2" clip-path="url(#terminal-3644730188-line-37)">32400&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="1220" y="922.8" textLength="12.2" clip-path="url(#terminal-3644730188-line-37)">
-</text><text class="terminal-3644730188-r2" x="12.2" y="947.2" textLength="146.4" clip-path="url(#terminal-3644730188-line-38)">192.168.1.40</text><text class="terminal-3644730188-r2" x="195.2" y="947.2" textLength="207.4" clip-path="url(#terminal-3644730188-line-38)">raspberrypi&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="439.2" y="947.2" textLength="195.2" clip-path="url(#terminal-3644730188-line-38)">Bilgisayar&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="671" y="947.2" textLength="244" clip-path="url(#terminal-3644730188-line-38)">Raspberry&#160;Pi&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="951.6" y="947.2" textLength="256.2" clip-path="url(#terminal-3644730188-line-38)">22&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="1220" y="947.2" textLength="12.2" clip-path="url(#terminal-3644730188-line-38)">
-</text><text class="terminal-3644730188-r2" x="12.2" y="971.6" textLength="146.4" clip-path="url(#terminal-3644730188-line-39)">192.168.1.50</text><text class="terminal-3644730188-r2" x="195.2" y="971.6" textLength="207.4" clip-path="url(#terminal-3644730188-line-39)">shellyplug-7C87CE</text><text class="terminal-3644730188-r2" x="439.2" y="971.6" textLength="195.2" clip-path="url(#terminal-3644730188-line-39)">Akıllı&#160;ev&#160;cihazı</text><text class="terminal-3644730188-r2" x="671" y="971.6" textLength="244" clip-path="url(#terminal-3644730188-line-39)">Shelly&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="951.6" y="971.6" textLength="256.2" clip-path="url(#terminal-3644730188-line-39)">80&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3644730188-r2" x="1220" y="971.6" textLength="12.2" clip-path="url(#terminal-3644730188-line-39)">
-</text><text class="terminal-3644730188-r2" x="1220" y="996" textLength="12.2" clip-path="url(#terminal-3644730188-line-40)">
+    <g class="terminal-707299737-matrix">
+    <text class="terminal-707299737-r1" x="0" y="20" textLength="219.6" clip-path="url(#terminal-707299737-line-0)">Bilmekte&#160;fayda&#160;var</text><text class="terminal-707299737-r2" x="1220" y="20" textLength="12.2" clip-path="url(#terminal-707299737-line-0)">
+</text><text class="terminal-707299737-r2" x="0" y="44.4" textLength="366" clip-path="url(#terminal-707299737-line-1)">&#160;&#160;•&#160;Dosya&#160;paylaşımı&#160;(SMB)&#160;açık</text><text class="terminal-707299737-r3" x="366" y="44.4" textLength="451.4" clip-path="url(#terminal-707299737-line-1)">&#160;&#160;FAMILY-PC&#160;(192.168.1.10),&#160;port:&#160;445</text><text class="terminal-707299737-r2" x="1220" y="44.4" textLength="12.2" clip-path="url(#terminal-707299737-line-1)">
+</text><text class="terminal-707299737-r2" x="0" y="68.8" textLength="366" clip-path="url(#terminal-707299737-line-2)">&#160;&#160;•&#160;Dosya&#160;paylaşımı&#160;(SMB)&#160;açık</text><text class="terminal-707299737-r3" x="366" y="68.8" textLength="463.6" clip-path="url(#terminal-707299737-line-2)">&#160;&#160;backup-nas&#160;(192.168.1.30),&#160;port:&#160;445</text><text class="terminal-707299737-r2" x="1220" y="68.8" textLength="12.2" clip-path="url(#terminal-707299737-line-2)">
+</text><text class="terminal-707299737-r2" x="0" y="93.2" textLength="329.4" clip-path="url(#terminal-707299737-line-3)">&#160;&#160;•&#160;SSH&#160;uzaktan&#160;girişi&#160;açık</text><text class="terminal-707299737-r3" x="329.4" y="93.2" textLength="463.6" clip-path="url(#terminal-707299737-line-3)">&#160;&#160;raspberrypi&#160;(192.168.1.40),&#160;port:&#160;22</text><text class="terminal-707299737-r2" x="1220" y="93.2" textLength="12.2" clip-path="url(#terminal-707299737-line-3)">
+</text><text class="terminal-707299737-r2" x="1220" y="117.6" textLength="12.2" clip-path="url(#terminal-707299737-line-4)">
+</text><text class="terminal-707299737-r1" x="0" y="142" textLength="109.8" clip-path="url(#terminal-707299737-line-5)">Modeminiz</text><text class="terminal-707299737-r2" x="1220" y="142" textLength="12.2" clip-path="url(#terminal-707299737-line-5)">
+</text><text class="terminal-707299737-r2" x="1220" y="166.4" textLength="12.2" clip-path="url(#terminal-707299737-line-6)">
+</text><text class="terminal-707299737-r3" x="0" y="190.8" textLength="170.8" clip-path="url(#terminal-707299737-line-7)">Dış&#160;IP&#160;adresi&#160;</text><text class="terminal-707299737-r2" x="207.4" y="190.8" textLength="158.6" clip-path="url(#terminal-707299737-line-7)">203.0.113.57&#160;</text><text class="terminal-707299737-r2" x="1220" y="190.8" textLength="12.2" clip-path="url(#terminal-707299737-line-7)">
+</text><text class="terminal-707299737-r3" x="0" y="215.2" textLength="170.8" clip-path="url(#terminal-707299737-line-8)">Bağlantı&#160;türü&#160;</text><text class="terminal-707299737-r2" x="207.4" y="215.2" textLength="158.6" clip-path="url(#terminal-707299737-line-8)">IP_Routed&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="215.2" textLength="12.2" clip-path="url(#terminal-707299737-line-8)">
+</text><text class="terminal-707299737-r3" x="0" y="239.6" textLength="170.8" clip-path="url(#terminal-707299737-line-9)">Durum&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="207.4" y="239.6" textLength="158.6" clip-path="url(#terminal-707299737-line-9)">Connected&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="239.6" textLength="12.2" clip-path="url(#terminal-707299737-line-9)">
+</text><text class="terminal-707299737-r3" x="0" y="264" textLength="170.8" clip-path="url(#terminal-707299737-line-10)">Çalışma&#160;süresi</text><text class="terminal-707299737-r2" x="207.4" y="264" textLength="158.6" clip-path="url(#terminal-707299737-line-10)">12&#160;gün&#160;5&#160;saat</text><text class="terminal-707299737-r2" x="1220" y="264" textLength="12.2" clip-path="url(#terminal-707299737-line-10)">
+</text><text class="terminal-707299737-r2" x="1220" y="288.4" textLength="12.2" clip-path="url(#terminal-707299737-line-11)">
+</text><text class="terminal-707299737-r1" x="0" y="312.8" textLength="292.8" clip-path="url(#terminal-707299737-line-12)">İnternete&#160;açılan&#160;portlar</text><text class="terminal-707299737-r2" x="1220" y="312.8" textLength="12.2" clip-path="url(#terminal-707299737-line-12)">
+</text><text class="terminal-707299737-r2" x="1220" y="337.2" textLength="12.2" clip-path="url(#terminal-707299737-line-13)">
+</text><text class="terminal-707299737-r1" x="12.2" y="361.6" textLength="170.8" clip-path="url(#terminal-707299737-line-14)">İnternet&#160;portu</text><text class="terminal-707299737-r1" x="219.6" y="361.6" textLength="97.6" clip-path="url(#terminal-707299737-line-14)">Protokol</text><text class="terminal-707299737-r1" x="353.8" y="361.6" textLength="463.6" clip-path="url(#terminal-707299737-line-14)">Hedef&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r1" x="854" y="361.6" textLength="207.4" clip-path="url(#terminal-707299737-line-14)">Açıklama&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="361.6" textLength="12.2" clip-path="url(#terminal-707299737-line-14)">
+</text><text class="terminal-707299737-r2" x="0" y="386" textLength="1073.6" clip-path="url(#terminal-707299737-line-15)">&#160;──────────────────────────────────────────────────────────────────────────────────────&#160;</text><text class="terminal-707299737-r2" x="1220" y="386" textLength="12.2" clip-path="url(#terminal-707299737-line-15)">
+</text><text class="terminal-707299737-r2" x="12.2" y="410.4" textLength="170.8" clip-path="url(#terminal-707299737-line-16)">8554&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="219.6" y="410.4" textLength="97.6" clip-path="url(#terminal-707299737-line-16)">TCP&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="353.8" y="410.4" textLength="463.6" clip-path="url(#terminal-707299737-line-16)">garden-cam&#160;(192.168.1.25),&#160;port:&#160;554&#160;&#160;</text><text class="terminal-707299737-r2" x="854" y="410.4" textLength="207.4" clip-path="url(#terminal-707299737-line-16)">IPCAM&#160;RTSP&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="410.4" textLength="12.2" clip-path="url(#terminal-707299737-line-16)">
+</text><text class="terminal-707299737-r2" x="12.2" y="434.8" textLength="170.8" clip-path="url(#terminal-707299737-line-17)">32400&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="219.6" y="434.8" textLength="97.6" clip-path="url(#terminal-707299737-line-17)">TCP&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="353.8" y="434.8" textLength="463.6" clip-path="url(#terminal-707299737-line-17)">backup-nas&#160;(192.168.1.30),&#160;port:&#160;32400</text><text class="terminal-707299737-r2" x="854" y="434.8" textLength="207.4" clip-path="url(#terminal-707299737-line-17)">Plex&#160;Media&#160;Server</text><text class="terminal-707299737-r2" x="1220" y="434.8" textLength="12.2" clip-path="url(#terminal-707299737-line-17)">
+</text><text class="terminal-707299737-r2" x="1220" y="459.2" textLength="12.2" clip-path="url(#terminal-707299737-line-18)">
+</text><text class="terminal-707299737-r2" x="1220" y="483.6" textLength="12.2" clip-path="url(#terminal-707299737-line-19)">
+</text><text class="terminal-707299737-r1" x="0" y="508" textLength="231.8" clip-path="url(#terminal-707299737-line-20)">Ağınızdaki&#160;cihazlar</text><text class="terminal-707299737-r2" x="1220" y="508" textLength="12.2" clip-path="url(#terminal-707299737-line-20)">
+</text><text class="terminal-707299737-r2" x="1220" y="532.4" textLength="12.2" clip-path="url(#terminal-707299737-line-21)">
+</text><text class="terminal-707299737-r1" x="12.2" y="556.8" textLength="146.4" clip-path="url(#terminal-707299737-line-22)">Adres&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r1" x="195.2" y="556.8" textLength="207.4" clip-path="url(#terminal-707299737-line-22)">Ad&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r1" x="439.2" y="556.8" textLength="195.2" clip-path="url(#terminal-707299737-line-22)">Tür&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r1" x="671" y="556.8" textLength="244" clip-path="url(#terminal-707299737-line-22)">Marka&#160;ve&#160;model&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r1" x="951.6" y="556.8" textLength="256.2" clip-path="url(#terminal-707299737-line-22)">Açık&#160;portlar&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="556.8" textLength="12.2" clip-path="url(#terminal-707299737-line-22)">
+</text><text class="terminal-707299737-r2" x="0" y="581.2" textLength="1220" clip-path="url(#terminal-707299737-line-23)">&#160;──────────────────────────────────────────────────────────────────────────────────────────────────&#160;</text><text class="terminal-707299737-r2" x="1220" y="581.2" textLength="12.2" clip-path="url(#terminal-707299737-line-23)">
+</text><text class="terminal-707299737-r2" x="12.2" y="605.6" textLength="146.4" clip-path="url(#terminal-707299737-line-24)">192.168.1.1&#160;</text><text class="terminal-707299737-r2" x="195.2" y="605.6" textLength="207.4" clip-path="url(#terminal-707299737-line-24)">fritz.box&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="439.2" y="605.6" textLength="195.2" clip-path="url(#terminal-707299737-line-24)">Modem/Router&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="671" y="605.6" textLength="244" clip-path="url(#terminal-707299737-line-24)">AVM&#160;FRITZ!Box&#160;7590&#160;&#160;</text><text class="terminal-707299737-r2" x="951.6" y="605.6" textLength="256.2" clip-path="url(#terminal-707299737-line-24)">53&#160;80&#160;443&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="605.6" textLength="12.2" clip-path="url(#terminal-707299737-line-24)">
+</text><text class="terminal-707299737-r3" x="195.2" y="630" textLength="61" clip-path="url(#terminal-707299737-line-25)">modem</text><text class="terminal-707299737-r2" x="1220" y="630" textLength="12.2" clip-path="url(#terminal-707299737-line-25)">
+</text><text class="terminal-707299737-r2" x="12.2" y="654.4" textLength="146.4" clip-path="url(#terminal-707299737-line-26)">192.168.1.10</text><text class="terminal-707299737-r2" x="195.2" y="654.4" textLength="207.4" clip-path="url(#terminal-707299737-line-26)">FAMILY-PC&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="439.2" y="654.4" textLength="195.2" clip-path="url(#terminal-707299737-line-26)">Bilgisayar&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="951.6" y="654.4" textLength="256.2" clip-path="url(#terminal-707299737-line-26)">135&#160;139&#160;445&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="654.4" textLength="12.2" clip-path="url(#terminal-707299737-line-26)">
+</text><text class="terminal-707299737-r3" x="195.2" y="678.8" textLength="158.6" clip-path="url(#terminal-707299737-line-27)">bu&#160;bilgisayar</text><text class="terminal-707299737-r2" x="1220" y="678.8" textLength="12.2" clip-path="url(#terminal-707299737-line-27)">
+</text><text class="terminal-707299737-r2" x="12.2" y="703.2" textLength="146.4" clip-path="url(#terminal-707299737-line-28)">192.168.1.11</text><text class="terminal-707299737-r2" x="195.2" y="703.2" textLength="207.4" clip-path="url(#terminal-707299737-line-28)">MacBook-Air&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="439.2" y="703.2" textLength="195.2" clip-path="url(#terminal-707299737-line-28)">Bilgisayar&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="671" y="703.2" textLength="244" clip-path="url(#terminal-707299737-line-28)">Apple&#160;MacBook&#160;Air&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="951.6" y="703.2" textLength="256.2" clip-path="url(#terminal-707299737-line-28)">7000&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="703.2" textLength="12.2" clip-path="url(#terminal-707299737-line-28)">
+</text><text class="terminal-707299737-r2" x="671" y="727.6" textLength="244" clip-path="url(#terminal-707299737-line-29)">(M1,&#160;2020)&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="727.6" textLength="12.2" clip-path="url(#terminal-707299737-line-29)">
+</text><text class="terminal-707299737-r2" x="12.2" y="752" textLength="146.4" clip-path="url(#terminal-707299737-line-30)">192.168.1.12</text><text class="terminal-707299737-r2" x="195.2" y="752" textLength="207.4" clip-path="url(#terminal-707299737-line-30)">iPhone&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="439.2" y="752" textLength="195.2" clip-path="url(#terminal-707299737-line-30)">Telefon&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="951.6" y="752" textLength="256.2" clip-path="url(#terminal-707299737-line-30)">62078&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="752" textLength="12.2" clip-path="url(#terminal-707299737-line-30)">
+</text><text class="terminal-707299737-r2" x="12.2" y="776.4" textLength="146.4" clip-path="url(#terminal-707299737-line-31)">192.168.1.13</text><text class="terminal-707299737-r2" x="195.2" y="776.4" textLength="207.4" clip-path="url(#terminal-707299737-line-31)">Galaxy-S23&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="439.2" y="776.4" textLength="195.2" clip-path="url(#terminal-707299737-line-31)">Telefon&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="776.4" textLength="12.2" clip-path="url(#terminal-707299737-line-31)">
+</text><text class="terminal-707299737-r3" x="195.2" y="800.8" textLength="158.6" clip-path="url(#terminal-707299737-line-32)">yanıt&#160;vermedi</text><text class="terminal-707299737-r2" x="1220" y="800.8" textLength="12.2" clip-path="url(#terminal-707299737-line-32)">
+</text><text class="terminal-707299737-r2" x="12.2" y="825.2" textLength="146.4" clip-path="url(#terminal-707299737-line-33)">192.168.1.20</text><text class="terminal-707299737-r2" x="195.2" y="825.2" textLength="207.4" clip-path="url(#terminal-707299737-line-33)">[TV]&#160;Living&#160;Room&#160;</text><text class="terminal-707299737-r2" x="439.2" y="825.2" textLength="195.2" clip-path="url(#terminal-707299737-line-33)">Televizyon&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="671" y="825.2" textLength="244" clip-path="url(#terminal-707299737-line-33)">Samsung&#160;QE55Q60B&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="951.6" y="825.2" textLength="256.2" clip-path="url(#terminal-707299737-line-33)">7000&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="825.2" textLength="12.2" clip-path="url(#terminal-707299737-line-33)">
+</text><text class="terminal-707299737-r2" x="12.2" y="849.6" textLength="146.4" clip-path="url(#terminal-707299737-line-34)">192.168.1.21</text><text class="terminal-707299737-r2" x="195.2" y="849.6" textLength="207.4" clip-path="url(#terminal-707299737-line-34)">Office-Printer&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="439.2" y="849.6" textLength="195.2" clip-path="url(#terminal-707299737-line-34)">Yazıcı&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="671" y="849.6" textLength="244" clip-path="url(#terminal-707299737-line-34)">Brother&#160;HL-L2350DW&#160;&#160;</text><text class="terminal-707299737-r2" x="951.6" y="849.6" textLength="256.2" clip-path="url(#terminal-707299737-line-34)">80&#160;443&#160;631&#160;9100&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="849.6" textLength="12.2" clip-path="url(#terminal-707299737-line-34)">
+</text><text class="terminal-707299737-r2" x="671" y="874" textLength="244" clip-path="url(#terminal-707299737-line-35)">series&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="874" textLength="12.2" clip-path="url(#terminal-707299737-line-35)">
+</text><text class="terminal-707299737-r2" x="12.2" y="898.4" textLength="146.4" clip-path="url(#terminal-707299737-line-36)">192.168.1.25</text><text class="terminal-707299737-r2" x="195.2" y="898.4" textLength="207.4" clip-path="url(#terminal-707299737-line-36)">garden-cam&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="439.2" y="898.4" textLength="195.2" clip-path="url(#terminal-707299737-line-36)">Kamera&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="951.6" y="898.4" textLength="256.2" clip-path="url(#terminal-707299737-line-36)">554&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="898.4" textLength="12.2" clip-path="url(#terminal-707299737-line-36)">
+</text><text class="terminal-707299737-r2" x="12.2" y="922.8" textLength="146.4" clip-path="url(#terminal-707299737-line-37)">192.168.1.30</text><text class="terminal-707299737-r2" x="195.2" y="922.8" textLength="207.4" clip-path="url(#terminal-707299737-line-37)">backup-nas&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="439.2" y="922.8" textLength="195.2" clip-path="url(#terminal-707299737-line-37)">NAS&#160;(ağ&#160;diski)&#160;&#160;</text><text class="terminal-707299737-r2" x="671" y="922.8" textLength="244" clip-path="url(#terminal-707299737-line-37)">NAS-2&#160;Bay&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="951.6" y="922.8" textLength="256.2" clip-path="url(#terminal-707299737-line-37)">139&#160;445&#160;5000&#160;5001&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="922.8" textLength="12.2" clip-path="url(#terminal-707299737-line-37)">
+</text><text class="terminal-707299737-r2" x="951.6" y="947.2" textLength="256.2" clip-path="url(#terminal-707299737-line-38)">32400&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="947.2" textLength="12.2" clip-path="url(#terminal-707299737-line-38)">
+</text><text class="terminal-707299737-r2" x="12.2" y="971.6" textLength="146.4" clip-path="url(#terminal-707299737-line-39)">192.168.1.40</text><text class="terminal-707299737-r2" x="195.2" y="971.6" textLength="207.4" clip-path="url(#terminal-707299737-line-39)">raspberrypi&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="439.2" y="971.6" textLength="195.2" clip-path="url(#terminal-707299737-line-39)">Bilgisayar&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="671" y="971.6" textLength="244" clip-path="url(#terminal-707299737-line-39)">Raspberry&#160;Pi&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="951.6" y="971.6" textLength="256.2" clip-path="url(#terminal-707299737-line-39)">22&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="971.6" textLength="12.2" clip-path="url(#terminal-707299737-line-39)">
+</text><text class="terminal-707299737-r2" x="12.2" y="996" textLength="146.4" clip-path="url(#terminal-707299737-line-40)">192.168.1.50</text><text class="terminal-707299737-r2" x="195.2" y="996" textLength="207.4" clip-path="url(#terminal-707299737-line-40)">shellyplug-7C87CE</text><text class="terminal-707299737-r2" x="439.2" y="996" textLength="195.2" clip-path="url(#terminal-707299737-line-40)">Akıllı&#160;ev&#160;cihazı</text><text class="terminal-707299737-r2" x="671" y="996" textLength="244" clip-path="url(#terminal-707299737-line-40)">Shelly&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="951.6" y="996" textLength="256.2" clip-path="url(#terminal-707299737-line-40)">80&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-707299737-r2" x="1220" y="996" textLength="12.2" clip-path="url(#terminal-707299737-line-40)">
+</text><text class="terminal-707299737-r2" x="1220" y="1020.4" textLength="12.2" clip-path="url(#terminal-707299737-line-41)">
 </text>
     </g>
     </g>

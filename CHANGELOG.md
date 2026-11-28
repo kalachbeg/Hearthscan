@@ -4,6 +4,20 @@ Notable changes to this project. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [semantic versioning](https://semver.org/).
 
+## [2.0.2] - 2026-11-28
+
+### Changed
+
+- Apple devices show the model they are sold as instead of just the family:
+  "MacBook Pro (14-inch, 2021)", "iPhone 15 Pro", "Apple TV 4K (3rd
+  generation)" and so on, from the identifier they announce over mDNS. Recent
+  iPhones, iPads, Macs, Apple TVs and HomePods are listed; others still get
+  the family name.
+- Macs that only announce themselves through `_companion-link` now get a model
+  too, and identifiers with a colour suffix (`iMac21,1@ECOLOR=...`) are read.
+- The maker and model column in the terminal is a little wider, so most full
+  model names fit on one line.
+
 ## [2.0.1] - 2026-11-21
 
 ### Changed
@@ -102,5 +116,6 @@ in your own home.
 
 Published as NetShark, a general purpose port, subdomain and web scanner.
 
+[2.0.2]: https://github.com/kalachbeg/Hearthscan/releases/tag/v2.0.2
 [2.0.1]: https://github.com/kalachbeg/Hearthscan/releases/tag/v2.0.1
 [2.0.0]: https://github.com/kalachbeg/Hearthscan/releases/tag/v2.0.0

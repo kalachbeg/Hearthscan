@@ -38,7 +38,7 @@ body:
     attributes:
       label: Hearthscan version
       description: Output of `hearthscan --version`.
-      placeholder: hearthscan 2.0.1
+      placeholder: hearthscan 2.0.2
     validations:
       required: true
   - type: dropdown

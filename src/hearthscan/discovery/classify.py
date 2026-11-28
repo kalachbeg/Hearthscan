@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from itertools import islice
 
 from ..models import Device, is_random_mac, normalize_mac
+from . import apple
 
 MAX_MODEL = 80
 MAX_EVIDENCE = 4
@@ -67,6 +68,7 @@ _SOFTWARE_MODEL = re.compile(r"windows media|media server|media renderer|\bupnp\
 _TXT_MODELS = (
     ("_device-info._tcp", "model"),
     ("_airplay._tcp", "model"),
+    ("_companion-link._tcp", "rpmd"),
     ("_raop._tcp", "am"),
     ("_googlecast._tcp", "md"),
 )
@@ -378,10 +380,10 @@ def classify(device: Device) -> None:
 
 
 def _score_model(tally: _Tally, text: str) -> None:
-    evidence = f"model {_clean(text, 40)}"
-    apple = _apple_model(text)
-    if apple is not None:
-        tally.add(apple[1], "model", 12, evidence)
+    evidence = f"model {_clean(apple.identifier(text), 40)}"
+    family = _apple_model(text)
+    if family is not None:
+        tally.add(family[1], "model", 12, evidence)
         return
     match = _match_name(_name_key(text))
     if match is not None:
@@ -427,7 +429,7 @@ def _match_name(key: str) -> tuple[str, int, str] | None:
 def _apple_model(text: str) -> tuple[str, str] | None:
     """("MacBook Pro", "computer") for "MacBookPro18,3"."""
     for pattern, name, kind in _APPLE_MODELS:
-        if pattern.fullmatch(text):
+        if pattern.fullmatch(apple.identifier(text)):
             return name, kind
     return None
 
@@ -472,9 +474,9 @@ def _upnp_model(upnp: object) -> str:
 
 def _pick_model(candidates: list[tuple[str, bool]]) -> str | None:
     for text, _ in candidates:
-        apple = _apple_model(text)
-        if apple is not None:
-            return apple[0]
+        family = _apple_model(text)
+        if family is not None:
+            return apple.full_name(text) or family[0]
     return candidates[0][0] if candidates else None
 
 

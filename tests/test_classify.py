@@ -123,7 +123,7 @@ def test_apple_tv_from_airplay_model():
         )
     )
     assert device.kind == "media"
-    assert device.model == "Apple TV"
+    assert device.model == "Apple TV 4K (2nd generation)"
     assert device.evidence[0] == "model AppleTV11,1"
 
 
@@ -153,26 +153,32 @@ def test_mac_from_device_info():
         )
     )
     assert device.kind == "computer"
-    assert device.model == "MacBook Pro"
+    assert device.model == "MacBook Pro (14-inch, 2021)"
 
 
 @pytest.mark.parametrize(
     "identifier, model, kind",
     [
-        ("AppleTV11,1", "Apple TV", "media"),
+        ("AppleTV11,1", "Apple TV 4K (2nd generation)", "media"),
+        ("AppleTV99,1", "Apple TV", "media"),
         ("AudioAccessory5,1", "HomePod mini", "speaker"),
         ("AudioAccessory1,1", "HomePod", "speaker"),
-        ("AudioAccessory6,1", "HomePod", "speaker"),
-        ("iPhone15,2", "iPhone", "phone"),
-        ("iPad13,4", "iPad", "tablet"),
-        ("MacBookPro18,3", "MacBook Pro", "computer"),
-        ("MacBookAir10,1", "MacBook Air", "computer"),
+        ("AudioAccessory6,1", "HomePod (2nd generation)", "speaker"),
+        ("iPhone15,2", "iPhone 14 Pro", "phone"),
+        ("iPhone16,1", "iPhone 15 Pro", "phone"),
+        ("iPhone99,1", "iPhone", "phone"),
+        ("iPad13,4", "iPad Pro 11-inch (3rd generation)", "tablet"),
+        ("iPad99,1", "iPad", "tablet"),
+        ("MacBookPro18,3", "MacBook Pro (14-inch, 2021)", "computer"),
+        ("MacBookAir10,1", "MacBook Air (M1, 2020)", "computer"),
         ("MacBook10,1", "MacBook", "computer"),
-        ("iMac21,1", "iMac", "computer"),
+        ("iMac21,1", "iMac (24-inch, M1, 2021)", "computer"),
         ("iMacPro1,1", "iMac Pro", "computer"),
-        ("Macmini9,1", "Mac mini", "computer"),
+        ("Macmini9,1", "Mac mini (M1, 2020)", "computer"),
         ("MacPro7,1", "Mac Pro", "computer"),
-        ("Mac14,2", "Mac", "computer"),
+        ("Mac14,2", "MacBook Air (M2, 2022)", "computer"),
+        ("Mac16,10", "Mac mini (2024)", "computer"),
+        ("Mac99,1", "Mac", "computer"),
     ],
 )
 def test_apple_identifiers(identifier, model, kind):
@@ -311,7 +317,7 @@ def test_mac_sharing_a_printer_stays_a_computer():
         )
     )
     assert device.kind == "computer"
-    assert device.model == "Mac"
+    assert device.model == "MacBook Air (M2, 2022)"
 
 
 def test_hikvision_camera_from_vendor_and_rtsp():
@@ -820,3 +826,29 @@ def test_model_numbers_that_say_nothing_are_left_out(number, model):
     device = Device("192.168.1.1", upnp=UpnpInfo(model_name="EX5000", model_number=number))
     classify(device)
     assert device.model == model
+
+
+def test_identifier_with_a_colour_suffix():
+    txt = {"_device-info._tcp": {"model": "iMac21,1@ECOLOR=226,213,214"}}
+    device = classified(Device("192.168.1.46", mdns=MdnsInfo(txt=txt)))
+    assert device.model == "iMac (24-inch, M1, 2021)"
+    assert device.kind == "computer"
+    assert device.evidence[0] == "model iMac21,1"
+
+
+def test_model_from_companion_link():
+    txt = {"_companion-link._tcp": {"rpMd": "MacBookPro18,1", "rpVr": "620.1"}}
+    device = classified(
+        Device("192.168.1.47", mdns=MdnsInfo(services={"_companion-link._tcp"}, txt=txt))
+    )
+    assert device.model == "MacBook Pro (16-inch, 2021)"
+    assert device.kind == "computer"
+
+
+def test_every_listed_apple_identifier_has_a_family():
+    from hearthscan.discovery import apple, classify
+
+    identifiers = [i for _, group in apple._GROUPS for i in group]
+    assert len(identifiers) == len(set(identifiers)) == len(apple.NAMES)
+    for identifier in identifiers:
+        assert classify._apple_model(identifier) is not None, identifier
