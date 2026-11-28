@@ -18,6 +18,21 @@
 </p>
 
 <p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/img/window-dark.png">
+    <img src="docs/img/window-light.png" alt="The Hearthscan window after a check: a network score of 45 out of 100, three high risks, and the first one explained: a camera whose video plays without a password." width="100%">
+  </picture>
+</p>
+
+<p align="center">
+  <img src="docs/img/terminal.svg" alt="The end of hearthscan scan in a terminal: things good to know, the router with two ports opened to the internet, and the eleven devices on the network." width="100%">
+</p>
+
+<p align="center">
+  <sub>The window after a check, and the end of the same check in a terminal. The network in these pictures is made up.</sub>
+</p>
+
+<p align="center">
   <a href="#quick-start"><kbd>&nbsp;Quick start&nbsp;</kbd></a>&nbsp;
   <a href="#features"><kbd>&nbsp;Features&nbsp;</kbd></a>&nbsp;
   <a href="#what-it-checks"><kbd>&nbsp;What it checks&nbsp;</kbd></a>&nbsp;
@@ -37,21 +52,6 @@ with what to do about it.
 It only looks. Nothing on your devices is changed, and nothing leaves your network. It
 runs on Windows, macOS and Linux, in a terminal or in a small window of its own, in
 English or Turkish, and it needs no admin rights.
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/img/window-dark.png">
-    <img src="docs/img/window-light.png" alt="The Hearthscan window after a check: a network score of 45 out of 100, three high risks, and the first one explained: a camera whose video plays without a password." width="100%">
-  </picture>
-</p>
-
-<p align="center">
-  <img src="docs/img/terminal.svg" alt="The end of hearthscan scan in a terminal: things good to know, the router with two ports opened to the internet, and the eleven devices on the network." width="100%">
-</p>
-
-<p align="center">
-  <sub>The window after a check, and the end of the same check in a terminal. The network in these pictures is made up.</sub>
-</p>
 
 ---
 

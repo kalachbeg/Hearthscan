@@ -18,6 +18,21 @@
 </p>
 
 <p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/img/window-dark-tr.png">
+    <img src="docs/img/window-light-tr.png" alt="Kontrol sonrası Hearthscan penceresi: 100 üzerinden 45 ağ puanı, üç yüksek risk ve ilk riskin açıklaması: görüntüsü şifresiz izlenebilen bir kamera." width="100%">
+  </picture>
+</p>
+
+<p align="center">
+  <img src="docs/img/terminal-tr.svg" alt="Terminalde hearthscan scan çıktısının sonu: bilmekte fayda olanlar, internete iki port açmış modem ve ağdaki on bir cihaz." width="100%">
+</p>
+
+<p align="center">
+  <sub>Bir kontrolün ardından pencere ve aynı kontrolün terminaldeki sonu. Resimlerdeki ağ gerçek değildir, örnek olarak hazırlanmıştır.</sub>
+</p>
+
+<p align="center">
   <a href="#hızlı-başlangıç"><kbd>&nbsp;Hızlı başlangıç&nbsp;</kbd></a>&nbsp;
   <a href="#özellikler"><kbd>&nbsp;Özellikler&nbsp;</kbd></a>&nbsp;
   <a href="#neleri-kontrol-eder"><kbd>&nbsp;Neleri kontrol eder&nbsp;</kbd></a>&nbsp;
@@ -37,21 +52,6 @@ gerektiğiyle birlikte anlatır.
 Yalnızca bakar: cihazlarınızda hiçbir şeyi değiştirmez ve hiçbir bilgi ağınızın dışına
 çıkmaz. Windows, macOS ve Linux'ta, ister terminalde ister kendi küçük penceresinde,
 Türkçe ya da İngilizce çalışır. Yönetici izni de istemez.
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/img/window-dark-tr.png">
-    <img src="docs/img/window-light-tr.png" alt="Kontrol sonrası Hearthscan penceresi: 100 üzerinden 45 ağ puanı, üç yüksek risk ve ilk riskin açıklaması: görüntüsü şifresiz izlenebilen bir kamera." width="100%">
-  </picture>
-</p>
-
-<p align="center">
-  <img src="docs/img/terminal-tr.svg" alt="Terminalde hearthscan scan çıktısının sonu: bilmekte fayda olanlar, internete iki port açmış modem ve ağdaki on bir cihaz." width="100%">
-</p>
-
-<p align="center">
-  <sub>Bir kontrolün ardından pencere ve aynı kontrolün terminaldeki sonu. Resimlerdeki ağ gerçek değildir, örnek olarak hazırlanmıştır.</sub>
-</p>
 
 ---
 
